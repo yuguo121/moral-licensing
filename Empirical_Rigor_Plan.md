@@ -1,39 +1,40 @@
 # Empirical Rigor & UTD24 Methodology Plan
 
-This document outlines the state-of-the-art econometric and identification strategies identified for aligning the "Moral Licensing in ESG and Earnings Management" study with UTD24 journal standards.
+This document outlines the state-of-the-art econometric and identification strategies identified for aligning the "Moral Licensing in ESG and Earnings Management" study with UTD24 journal standards (e.g., *Academy of Management Journal*, *Journal of Accounting and Economics*).
 
 ## 1. High-Standard Identification Strategies
 
 | Methodology | Application in ESG-EM Research |
 | :--- | :--- |
-| **Two-Stage Least Squares (2SLS)** | Addresses endogeneity using industry-average or geographic-peer ESG scores as instruments. |
-| **Staggered Difference-in-Differences (DiD)** | Leverages regulatory shocks (e.g., EU CSRD, ISSB) to compare treated vs. control firms. |
-| **Oster (2019) Selection on Unobservables** | Tests the robustness of results against unobserved variables (e.g., managerial ethics). |
-| **Propensity Score Matching (PSM)** | Creates comparable control groups based on financial characteristics (Size, ROA, Leverage). |
-| **Textual Analysis (NLP)** | Categorizes ESG disclosures into "Progress" vs. "Commitment" framing. |
+| **Two-Stage Least Squares (2SLS)** | Addresses endogeneity using industry-average ESG scores as excluded instruments (eliminating firm-level idiosyncratic error). |
+| **Staggered Difference-in-Differences (DiD)** | Leverages regulatory shocks (e.g., EU NFRD, California SB 253) to establish causal direction. |
+| **Oster (2019) Test** | Quantifies the potential impact of unobserved variables (e.g., managerial "hidden" ethics) on coefficient stability. |
+| **Propensity Score Matching (PSM)** | Ensures treatment (High ESG) and control (Low ESG) groups are balanced on observable financial covariates. |
 
-## 2. The "Moral Licensing" Identification Path
+## 2. Theoretical Refinement: A Dual-Moderator Framework
 
-The core UTD24 requirement is the direct identification of the psychological mechanism.
+To rigorously identify the "Moral Licensing" mechanism, we reconcile the contextual and dispositional boundaries of the effect.
 
-### A. Framing Identification (NLP)
-*   **Progress Dictionary:** "achieved," "attained," "completed," "milestone," "reached," "progress," "success."
-*   **Commitment Dictionary:** "dedicated," "long-term," "priority," "values," "integral," "ongoing," "commitment," "mission."
-*   **Test:** Interact `ESG Score` with `Progress-intensity`. Moral licensing (positive correlation with EM) should be strongest under *Progress Framing*.
+### A. Moderator 1: Industry Culpability (Contextual Framing)
+*   **Logic:** Determines the *socially constructed meaning* of ESG. 
+    *   In **Non-Culpable Industries**, ESG is construed as **"Progress"** (discretionary moral credit $\rightarrow$ licensing).
+    *   In **Culpable Industries**, ESG is construed as **"Commitment"** (necessary restorative effort $\rightarrow$ constraints licensing).
 
-### B. Moderated Mediation
-*   **Logic:** `ESG` $\rightarrow$ `Moral Credit (Framing)` $\rightarrow$ `Earnings Management`.
-*   **Moderator:** `Industry Culpability` (determines whether ESG is seen as a "commitment" or "progress").
+### B. Moderator 2: Moral Identity Centrality (Dispositional Authenticity)
+*   **Construct:** Distinguishes between *Substantive* vs. *Symbolic* ESG engagement.
+*   **Measurement (Early Adoption):** A dummy variable for firms that voluntarily adopted E/S policies or reporting **at least 3-5 years prior** to regional mandatory disclosure requirements.
+*   **Theoretical Reconciliation:** While industry culpability sets the "external frame," **Early Adoption** reflects the firm's internal **Moral Path-Dependency**. 
+    *   **Consistent Firms (Early Adopters):** ESG is central to their identity. The "Identity Dissonance" of committing EM outweighs any "Moral Licensing" benefit.
+    *   **Reactive Firms (Late Adopters):** ESG is peripheral or strategic. They are more likely to view ESG as a "moral deposit" that justifies subsequent ethical lapses.
 
 ## 3. Advanced Robustness Tests
 
-1.  **Selection on Unobservables (Oster, 2019):** Prove that unobservables would need to be >1.0 times as important as observables to nullify the effect.
-2.  **Alternative EM Proxies:** Test both **Accrual-based EM (AEM)** and **Real EM (REM)**.
-3.  **Governance Boundary Conditions:** Test if high-quality governance (board independence, etc.) constraints the licensing effect.
-4.  **Falsification (Placebo):** Run the model on "Social" (S) scores vs. "Environmental" (E) scores to validate the "substantive sacrifice" mechanism.
+1.  **Oster (2019) Stability Analysis:** Ensuring the $\beta$ of ESG remains robust against selection on unobservables.
+2.  **Alternative EM Proxies:** Moving beyond Jones-model residuals to **Real Earnings Management (REM)** (e.g., abnormal R&D cuts, overproduction).
+3.  **Governance as a Boundary Condition:** Testing whether strong board monitoring (Dispositional Governance) attenuates the licensing effect.
 
 ## 4. Implementation Checklist
-- [ ] Refine "Progress/Commitment" word lists for NLP.
-- [ ] Execute `psacalc` in Stata for Oster (2019) test.
-- [ ] Identify a specific exogenous shock (e.g., California's SB 253/261 or EU NFRD) for DiD.
-- [ ] Re-run models with Firm + Year + Industry-Year Fixed Effects.
+- [ ] **Construct Early Adoption Dummy:** Map firm-level ESG reporting start dates against jurisdictional regulatory timelines.
+- [ ] **Instrument Validation:** Run Cragg-Donald Wald F-tests for the industry-average IV.
+- [ ] **Mechanism Falsification:** Compare Environmental (high substantive sacrifice) vs. Governance (baseline compliance) effects.
+- [ ] **Fixed Effects:** Ensure models include Firm + Year + Industry-Year Fixed Effects to capture time-varying industry shocks.
