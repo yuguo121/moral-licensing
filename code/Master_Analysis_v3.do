@@ -2,6 +2,8 @@
    MASTER ANALYSIS v3 — regressions only
    Prerequisite: run Master_Merge_v3.do to build:
      $ROOT\data\processed\final_analysis_v3.dta
+
+   DVs: 5 DA (da_dss da_ko da_yu da_ge da_dechow) + 3 REM (rem_heese ab_prod ab_disexp_neg)
    ==================================================================== */
 
 version 19.0
@@ -80,9 +82,9 @@ xtset gvkey year
 
 
 /* ====================================================================
-   MAIN REGRESSIONS (Heese-aligned DV, current controls)
+   MAIN REGRESSIONS — 5 DA + 3 REM
    ==================================================================== */
-display as text _newline ">>> Main regressions..."
+display as text _newline ">>> Main regressions (5 DA, 3 REM)..."
 
 label var vs_11          "ES Composite Score"
 label var vs_4           "Environmental Score"
@@ -111,9 +113,9 @@ capture label var da_yu      "DA; NI-OANCF TA"
 capture label var da_ge      "DA; IBC-OANCF TA"
 capture label var da_dechow  "DA; IB-dCHE TA"
 capture label var dss_da_heese "Same as da_dss"
-label var rem_heese         "REM (Heese-aligned)"
-capture label var ab_prod   "Abnormal Production Costs"
-capture label var ab_disexp_neg "Abnormal Discretionary Expenses (-1)"
+label var rem_heese         "REM: AbPROD + AbDISX(-)"
+capture label var ab_prod   "Abnormal production (REM)"
+capture label var ab_disexp_neg "Abnormal disc. expenses x(-1) (REM)"
 
 global ctrl_core size mb2 lev roa growth_asset cash_holding ///
                  big_4 noa mkt_share loss
@@ -147,131 +149,152 @@ foreach v of local wvars {
 }
 winsor2 `wvars_exist', cuts(0.5 99.5) replace
 
-eststo clear
-foreach v in vs_11 vs_4 vs_6 {
-    capture noisily reghdfe dss_da_heese `v' 1.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
-    if !_rc {
-        eststo da_`v'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local dv_type "Heese-aligned signed DA"
+* --- 5 DA: one RTF per TA measure ---
+foreach stub in dss ko yu ge dechow {
+    capture confirm variable da_`stub'
+    if _rc continue
+    display as text "  [DA] `stub' (da_`stub')..."
+    eststo clear
+    foreach v in vs_11 vs_4 vs_6 {
+        capture noisily reghdfe da_`stub' `v' 1.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
+        if !_rc {
+            eststo m_`v'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local dv_type "DA (`stub')"
+        }
     }
-}
-foreach v in vs_11 vs_4 vs_6 {
-    capture noisily reghdfe dss_da_heese c.`v'##i.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
-    if !_rc {
-        eststo dai_`v'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local dv_type "Heese-aligned signed DA"
+    foreach v in vs_11 vs_4 vs_6 {
+        capture noisily reghdfe da_`stub' c.`v'##i.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
+        if !_rc {
+            eststo i_`v'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local dv_type "DA (`stub')"
+        }
     }
-}
-
-capture noisily esttab da_vs_11 da_vs_4 da_vs_6 dai_vs_11 dai_vs_4 dai_vs_6 ///
-    using "$OUTPUT\Master_v3_Results_HeeseDA.rtf", ///
-    replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
-    label compress nogaps ///
-    mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
-    scalars("dv_type DV" "fe_year Year FE" "fe_firm Firm FE" "N Observations" "r2_a Adj. R-squared") ///
-    title("v3 Main Results: ESG and Heese-Aligned Signed Discretionary Accruals") ///
-    addnotes("Heese-preserved: balance-sheet accruals without depreciation; adjusted revenue in Modified Jones." ///
-             "SIC-2 cells; clustered SE at firm level.")
-
-eststo clear
-foreach v in vs_11 vs_4 vs_6 {
-    capture noisily reghdfe rem_heese `v' 1.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
-    if !_rc {
-        eststo rem_`v'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local dv_type "Heese-aligned REM"
-    }
-}
-foreach v in vs_11 vs_4 vs_6 {
-    capture noisily reghdfe rem_heese c.`v'##i.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
-    if !_rc {
-        eststo remi_`v'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local dv_type "Heese-aligned REM"
-    }
+    capture noisily esttab m_vs_11 m_vs_4 m_vs_6 i_vs_11 i_vs_4 i_vs_6 ///
+        using "$OUTPUT\Master_v3_DA_`stub'.rtf", ///
+        replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
+        label compress nogaps ///
+        mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
+        scalars("dv_type DV" "fe_year Year FE" "fe_firm Firm FE" "N Observations" "r2_a Adj. R-squared") ///
+        title("v3: ESG and DA (`stub')") ///
+        addnotes("Modified Jones; SIC-2×year estimation in merge. Cluster gvkey.")
 }
 
-capture noisily esttab rem_vs_11 rem_vs_4 rem_vs_6 remi_vs_11 remi_vs_4 remi_vs_6 ///
-    using "$OUTPUT\Master_v3_Results_REM.rtf", ///
-    replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
-    label compress nogaps ///
-    mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
-    scalars("dv_type DV" "fe_year Year FE" "fe_firm Firm FE" "N Observations" "r2_a Adj. R-squared") ///
-    title("v3 Main Results: ESG and Heese-Aligned Real Earnings Management") ///
-    addnotes("REM = AbPROD + AbDISX(-). Discretionary expenses: SG&A + R&D (Compustat).")
+* --- 3 REM: aggregate + two components ---
+foreach remdv in rem_heese ab_prod ab_disexp_neg {
+    capture confirm variable `remdv'
+    if _rc continue
+    if "`remdv'" == "rem_heese" local rname total
+    else if "`remdv'" == "ab_prod" local rname abprod
+    else local rname abdisx
+    display as text "  [REM] `rname' (`remdv')..."
+    eststo clear
+    foreach v in vs_11 vs_4 vs_6 {
+        capture noisily reghdfe `remdv' `v' 1.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
+        if !_rc {
+            eststo m_`v'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local dv_type "REM (`rname')"
+        }
+    }
+    foreach v in vs_11 vs_4 vs_6 {
+        capture noisily reghdfe `remdv' c.`v'##i.industry_type $ctrl, absorb(year gvkey) cluster(gvkey)
+        if !_rc {
+            eststo i_`v'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local dv_type "REM (`rname')"
+        }
+    }
+    capture noisily esttab m_vs_11 m_vs_4 m_vs_6 i_vs_11 i_vs_4 i_vs_6 ///
+        using "$OUTPUT\Master_v3_REM_`rname'.rtf", ///
+        replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
+        label compress nogaps ///
+        mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
+        scalars("dv_type DV" "fe_year Year FE" "fe_firm Firm FE" "N Observations" "r2_a Adj. R-squared") ///
+        title("v3: ESG and REM (`rname')") ///
+        addnotes("REM from merge: prod/disx abnormal vs SIC-2×year normals. Cluster gvkey.")
+}
 
 display as text ">>> Main regressions completed."
 
 
 /* ====================================================================
-   LEAVE-ONE-OUT IV
+   LEAVE-ONE-OUT IV — 5 DA + 3 REM
    ==================================================================== */
-display as text _newline ">>> Leave-one-out IV..."
+display as text _newline ">>> Leave-one-out IV (5 DA, 3 REM)..."
 
 tempname ivpost
-postfile `ivpost' str18 dv str12 esg_score str12 spec ///
+postfile `ivpost' str24 dv str12 esg_score str12 spec ///
     double N_used F_kp b_esg se_esg t_esg p_esg using ///
     "$OUTPUT\Master_v3_IV_LOO_results.dta", replace
 
-eststo clear
-foreach esg in vs_11 vs_4 vs_6 {
-    quietly run_loo_iv, esgvar(`esg') dvvar(dss_da_heese) ctrls("$ctrl")
-    if r(ok) == 1 {
-        eststo ivda_`esg'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local instrument "LOO mean within SIC-2 x year"
-        capture estadd scalar kp_F = r(F_kp)
-        post `ivpost' ("dss_da_heese") ("`esg'") ("current") ///
-            (r(N_used)) (r(F_kp)) (r(b_esg)) (r(se_esg)) (r(t_esg)) (r(p_esg))
+foreach stub in dss ko yu ge dechow {
+    capture confirm variable da_`stub'
+    if _rc continue
+    eststo clear
+    foreach esg in vs_11 vs_4 vs_6 {
+        quietly run_loo_iv, esgvar(`esg') dvvar(da_`stub') ctrls("$ctrl")
+        if r(ok) == 1 {
+            eststo iv_`esg'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local instrument "LOO mean within SIC-2 x year"
+            capture estadd scalar kp_F = r(F_kp)
+            post `ivpost' ("da_`stub'") ("`esg'") ("main") ///
+                (r(N_used)) (r(F_kp)) (r(b_esg)) (r(se_esg)) (r(t_esg)) (r(p_esg))
+        }
+        else {
+            post `ivpost' ("da_`stub'") ("`esg'") ("main") ///
+                (.) (.) (.) (.) (.) (.)
+        }
     }
-    else {
-        post `ivpost' ("dss_da_heese") ("`esg'") ("current") ///
-            (.) (.) (.) (.) (.) (.)
-    }
+    capture noisily esttab iv_vs_11 iv_vs_4 iv_vs_6 ///
+        using "$OUTPUT\Master_v3_IV_DA_`stub'.rtf", ///
+        replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
+        label compress nogaps ///
+        mtitles("ES Composite" "Environmental" "Social") ///
+        scalars("instrument Instrument" "kp_F KP rk Wald F" "N Observations") ///
+        title("v3 IV: LOO and DA (`stub')") ///
+        addnotes("Instrument = leave-one-out SIC-2 × year peer average of ESG score.")
 }
 
-capture noisily esttab ivda_vs_11 ivda_vs_4 ivda_vs_6 ///
-    using "$OUTPUT\Master_v3_IV_HeeseDA.rtf", ///
-    replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
-    label compress nogaps ///
-    mtitles("ES Composite" "Environmental" "Social") ///
-    scalars("instrument Instrument" "kp_F KP rk Wald F" "N Observations") ///
-    title("v3 IV: LOO ESG Instruments and Heese-Aligned Signed DA") ///
-    addnotes("Instrument = leave-one-out SIC-2 × year peer average of ESG score.")
-
-eststo clear
-foreach esg in vs_11 vs_4 vs_6 {
-    quietly run_loo_iv, esgvar(`esg') dvvar(rem_heese) ctrls("$ctrl")
-    if r(ok) == 1 {
-        eststo ivrem_`esg'
-        estadd local fe_year "Yes"
-        estadd local fe_firm "Yes"
-        estadd local instrument "LOO mean within SIC-2 x year"
-        capture estadd scalar kp_F = r(F_kp)
-        post `ivpost' ("rem_heese") ("`esg'") ("current") ///
-            (r(N_used)) (r(F_kp)) (r(b_esg)) (r(se_esg)) (r(t_esg)) (r(p_esg))
+foreach remdv in rem_heese ab_prod ab_disexp_neg {
+    capture confirm variable `remdv'
+    if _rc continue
+    if "`remdv'" == "rem_heese" local rname total
+    else if "`remdv'" == "ab_prod" local rname abprod
+    else local rname abdisx
+    eststo clear
+    foreach esg in vs_11 vs_4 vs_6 {
+        quietly run_loo_iv, esgvar(`esg') dvvar(`remdv') ctrls("$ctrl")
+        if r(ok) == 1 {
+            eststo iv_`esg'
+            estadd local fe_year "Yes"
+            estadd local fe_firm "Yes"
+            estadd local instrument "LOO mean within SIC-2 x year"
+            capture estadd scalar kp_F = r(F_kp)
+            post `ivpost' ("`remdv'") ("`esg'") ("main") ///
+                (r(N_used)) (r(F_kp)) (r(b_esg)) (r(se_esg)) (r(t_esg)) (r(p_esg))
+        }
+        else {
+            post `ivpost' ("`remdv'") ("`esg'") ("main") ///
+                (.) (.) (.) (.) (.) (.)
+        }
     }
-    else {
-        post `ivpost' ("rem_heese") ("`esg'") ("current") ///
-            (.) (.) (.) (.) (.) (.)
-    }
+    capture noisily esttab iv_vs_11 iv_vs_4 iv_vs_6 ///
+        using "$OUTPUT\Master_v3_IV_REM_`rname'.rtf", ///
+        replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
+        label compress nogaps ///
+        mtitles("ES Composite" "Environmental" "Social") ///
+        scalars("instrument Instrument" "kp_F KP rk Wald F" "N Observations") ///
+        title("v3 IV: LOO and REM (`rname')") ///
+        addnotes("Instrument = leave-one-out SIC-2 × year peer average of ESG score.")
 }
-
-capture noisily esttab ivrem_vs_11 ivrem_vs_4 ivrem_vs_6 ///
-    using "$OUTPUT\Master_v3_IV_REM.rtf", ///
-    replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
-    label compress nogaps ///
-    mtitles("ES Composite" "Environmental" "Social") ///
-    scalars("instrument Instrument" "kp_F KP rk Wald F" "N Observations") ///
-    title("v3 IV: LOO ESG Instruments and Heese-Aligned REM") ///
-    addnotes("Instrument = leave-one-out SIC-2 × year peer average of ESG score.")
 
 postclose `ivpost'
 
@@ -282,5 +305,5 @@ restore
 
 display as text ">>> IV block completed."
 display as text ">>> Analysis v3 finished: $S_DATE $S_TIME"
-display as text ">>> Tables under: $OUTPUT"
+display as text ">>> Output: Master_v3_DA_*.rtf, Master_v3_REM_*.rtf, Master_v3_IV_*.rtf, $OUTPUT"
 log close
