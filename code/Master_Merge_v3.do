@@ -1,0 +1,398 @@
+/* ====================================================================
+   MASTER MERGE v3 — build firm-year panel from raw → processed
+   Project: Corporate ESG Engagement and Earnings Management
+   Run before: Master_Analysis_v3.do
+
+   Outputs (under data/processed):
+     dv_em_v3.dta          — Compustat + Heese-aligned EM DVs
+     playboard_v3.dta      — after KLD / IO / MSCI / CEO merges + controls
+     final_analysis_v3.dta — firm-age, duality, growth; unique gvkey × year
+
+   Merge logic aligned with legacy merge_aug.do:
+     — stable keys: cusip_8 + fyear or year; gvkey + year for firm panel
+     — dedupe using data before merge; CEO side sorted then 1:1 merge
+   ==================================================================== */
+
+version 19.0
+clear all
+set more off
+capture log close
+
+global ROOT         "c:\Users\HuGoL\OneDrive - HKUST (Guangzhou)\PhD\3_Research\Moral Licensing"
+global RAW_ROOT     "D:\Research\Data"
+global FIN_DATA     "$RAW_ROOT\Financials"
+global CEO_DATA     "$RAW_ROOT\CEO"
+global ESG_DATA     "$RAW_ROOT\ESG"
+global PROJ_DATA    "$ROOT\data\processed"
+
+cd "$ROOT\code"
+log using "$ROOT\code\merge_v3_log.log", replace
+
+capture which asreg
+if _rc {
+    display as error "Package asreg not found. Installing..."
+    ssc install asreg
+}
+
+capture program drop log_sample
+program define log_sample
+    syntax , Step(string)
+    quietly count
+    display as text "  [SAMPLE] `step': " r(N) " observations"
+end
+
+local comp_file     "$FIN_DATA\compustat_80_25.dta"
+local io_file       "$FIN_DATA\io.dta"
+local kld_file      "$ESG_DATA\kld_zy.dta"
+local firm_age_file "$RAW_ROOT\firm_age.dta"
+local msci_file     "$PROJ_DATA\msci_esg.dta"
+local ceo_comp_file "$PROJ_DATA\ceo_compensation.dta"
+local duality_file  "$PROJ_DATA\duality_sup.dta"
+
+foreach _f in comp_file io_file kld_file firm_age_file msci_file ceo_comp_file duality_file {
+    local _path ``_f''
+    capture confirm file `"`_path'"'
+    if _rc {
+        display as error "Required file not found: `_path'"
+        exit 601
+    }
+}
+
+display as text _newline ">>> Merge v3 started: $S_DATE $S_TIME"
+
+
+/* ====================================================================
+   PART 1: RAW COMPUSTAT → HEESE-ALIGNED EM MEASURES
+   ==================================================================== */
+display as text _newline ">>> Part 1: Heese-aligned EM from raw Compustat..."
+
+use `"`comp_file'"', clear
+
+capture confirm numeric variable sic
+if _rc {
+    destring sic, replace force
+}
+gen sic_num = sic
+
+drop if inrange(sic_num, 6000, 6999)
+
+capture confirm variable linkprim
+if !_rc {
+    drop if inlist(linkprim, "N", "J")
+}
+
+drop if missing(gvkey) | missing(fyear) | missing(at) | missing(sale) | missing(ni)
+drop if at <= 0
+
+destring gvkey, replace force
+gen cusip_8 = substr(cusip, 1, 8)
+
+duplicates drop gvkey fyear, force
+
+sort gvkey fyear
+gen year = fyear
+xtset gvkey year
+log_sample, step("After base Compustat filters")
+
+* Debt/cash: treat Compustat missings as zero for book leverage (common); diagnose CHE before imputing.
+quietly count if missing(che)
+display as text "  [INFO] Missing CHE before impute: " r(N) " obs"
+replace dltt = 0 if missing(dltt)
+replace dlc  = 0 if missing(dlc)
+replace che  = 0 if missing(che)
+
+gen lev = (dltt + dlc) / at
+gen cash_holding = che / at
+gen size = ln(at)
+gen roa  = ni / at
+
+gen double she = .
+capture replace she = seq if !missing(seq)
+capture replace she = ceq + pstk if missing(she) & !missing(ceq) & !missing(pstk)
+capture replace she = ceq if missing(she) & !missing(ceq)
+capture replace she = at - lt - mib if missing(she) & !missing(at) & !missing(lt) & !missing(mib)
+capture replace she = at - lt if missing(she) & !missing(at) & !missing(lt)
+
+* Preferred stock: fill by priority without using ps==0 as "unset" (pstkrv can be legitimately 0).
+gen double ps = .
+capture replace ps = pstkrv if !missing(pstkrv)
+capture replace ps = pstkl if missing(ps) & !missing(pstkl)
+capture replace ps = pstk if missing(ps) & !missing(pstk)
+replace ps = 0 if missing(ps)
+
+gen double be = she - ps
+* mb2: market-to-book; be>0 only (negative book equity excluded, common in EM literature).
+gen double mb2 = (prcc_f * csho) / be if !missing(prcc_f) & !missing(csho) & !missing(be) & be > 0
+gen mv  = prcc_f * csho
+
+* MV filter: prcc_f*csho in Compustat is USD millions; drop micro-caps (project rule).
+drop if missing(mv) | mv < 20
+log_sample, step("After market-value filter")
+
+tostring sic_num, gen(sic_str) format(%04.0f)
+gen sic_2 = substr(sic_str, 1, 2)
+
+sort gvkey year
+by gvkey: gen double l_at = at[_n-1] if year[_n-1] == year - 1
+quietly count if missing(l_at)
+display as text "  [INFO] Dropping obs with no prior-year AT (incl. first firm-year): " r(N)
+drop if missing(l_at)
+log_sample, step("After lagged-assets requirement")
+
+by gvkey: gen double dss_ta = ///
+    (act - act[_n-1]) - (lct - lct[_n-1]) - (che - che[_n-1]) + (dlc - dlc[_n-1]) ///
+    if year[_n-1] == year - 1
+
+gen double dss_ta_scaled = dss_ta / l_at
+gen double iv_1  = 1 / l_at
+by gvkey: gen double iv_22 = ///
+    ((revt - revt[_n-1]) - (rect - rect[_n-1])) / l_at ///
+    if year[_n-1] == year - 1
+gen double iv_3  = ppegt / l_at
+
+gen byte _heese_da_ok = !missing(dss_ta_scaled, iv_1, iv_22, iv_3)
+bysort sic_2 year: egen _heese_da_n = total(_heese_da_ok)
+
+display as text "  Estimating signed Heese-style DA (SIC-2 × year)..."
+bys year sic_2: asreg dss_ta_scaled iv_1 iv_22 iv_3 if _heese_da_n >= 10
+gen double _nda_heese = _b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons ///
+    if _heese_da_n >= 10
+gen double dss_da_heese = dss_ta_scaled - _nda_heese ///
+    if _heese_da_n >= 10 & !missing(dss_ta_scaled, iv_1, iv_22, iv_3)
+drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons _nda_heese _heese_da_ok _heese_da_n
+
+gen double dss_da_heese_abs  = abs(dss_da_heese)
+gen double dss_da_heese_plus = max(dss_da_heese, 0)
+
+gen double sale_scaled = sale / l_at
+by gvkey: gen double d_sale_scaled = (sale - sale[_n-1]) / l_at if year[_n-1] == year - 1
+by gvkey: gen double l_d_sale_scaled = d_sale_scaled[_n-1] if year[_n-1] == year - 1
+by gvkey: gen double l_sale_scaled = sale_scaled[_n-1] if year[_n-1] == year - 1
+
+replace invch = 0 if missing(invch)
+gen double prod_scaled = (cogs + invch) / l_at if !missing(cogs)
+
+replace xrd = 0 if missing(xrd)
+gen double disexp_scaled = (xsga + xrd) / l_at if !missing(xsga)
+
+gen byte _prod_ok = !missing(prod_scaled, iv_1, sale_scaled, d_sale_scaled, l_d_sale_scaled)
+gen byte _disx_ok = !missing(disexp_scaled, iv_1, l_sale_scaled)
+bysort sic_2 year: egen _prod_n = total(_prod_ok)
+bysort sic_2 year: egen _disx_n = total(_disx_ok)
+
+display as text "  Estimating Heese-style REM (SIC-2 × year)..."
+bys year sic_2: asreg prod_scaled iv_1 sale_scaled d_sale_scaled l_d_sale_scaled if _prod_n >= 10
+gen double _normal_prod = ///
+    _b_iv_1 * iv_1 + _b_sale_scaled * sale_scaled + _b_d_sale_scaled * d_sale_scaled + ///
+    _b_l_d_sale_scaled * l_d_sale_scaled + _b_cons if _prod_n >= 10
+gen double ab_prod = prod_scaled - _normal_prod if _prod_n >= 10
+drop _Nobs _R2 _adjR2 _b_iv_1 _b_sale_scaled _b_d_sale_scaled _b_l_d_sale_scaled _b_cons _normal_prod
+
+bys year sic_2: asreg disexp_scaled iv_1 l_sale_scaled if _disx_n >= 10
+gen double _normal_disx = _b_iv_1 * iv_1 + _b_l_sale_scaled * l_sale_scaled + _b_cons if _disx_n >= 10
+gen double ab_disexp = disexp_scaled - _normal_disx if _disx_n >= 10
+drop _Nobs _R2 _adjR2 _b_iv_1 _b_l_sale_scaled _b_cons _normal_disx _prod_ok _disx_ok _prod_n _disx_n
+
+gen double ab_disexp_neg = -1 * ab_disexp
+gen double rem_heese = ab_prod + ab_disexp_neg
+
+label var dss_da_heese      "Signed discretionary accruals (Heese-aligned)"
+label var dss_da_heese_abs  "Absolute discretionary accruals (diagnostic)"
+label var dss_da_heese_plus "Positive signed discretionary accruals (diagnostic)"
+label var rem_heese         "REM = AbPROD + AbDISX(-) (Heese-aligned)"
+
+compress
+save "$PROJ_DATA\dv_em_v3.dta", replace
+display as text ">>> Part 1 done: dv_em_v3.dta"
+
+
+/* ====================================================================
+   PART 2: MERGE EXTERNAL DATA (merge_aug-style keys & dedupe)
+   ==================================================================== */
+display as text _newline ">>> Part 2: Merges and controls..."
+
+use "$PROJ_DATA\dv_em_v3.dta", clear
+capture replace year = fyear if missing(year)
+
+* --- KLD: one row per cusip_8 × fyear ---
+preserve
+use `"`kld_file'"', clear
+capture confirm variable cusip_8
+if _rc gen cusip_8 = substr(cusip, 1, 8)
+duplicates drop cusip_8 fyear, force
+tempfile kld_temp
+save `kld_temp'
+restore
+
+merge 1:1 cusip_8 fyear using `kld_temp', ///
+    nogen keep(1 3 4 5) update ///
+    keepusing(env_str_* env_con_* com_str_* com_con_* hum_str_* hum_con_* ///
+              emp_str_* emp_con_* div_str_* div_con_* pro_str_* pro_con_* ///
+              cgov_str_* cgov_con_* alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*)
+log_sample, step("After KLD merge")
+
+* --- IO: one row per cusip_8 × fyear ---
+preserve
+use `"`io_file'"', clear
+capture confirm variable cusip_8
+if _rc gen cusip_8 = substr(cusip, 1, 8)
+capture confirm variable fyear
+if _rc {
+    capture confirm variable year
+    if !_rc rename year fyear
+}
+duplicates drop cusip_8 fyear, force
+tempfile io_temp
+save `io_temp'
+restore
+
+merge 1:1 cusip_8 fyear using `io_temp', keep(1 3) nogen keepusing(per_*)
+log_sample, step("After IO merge")
+
+gen byte culpa = 0
+capture unab sinvars : alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*
+if !_rc {
+    foreach v of local sinvars {
+        replace culpa = 1 if `v' == 1
+    }
+}
+
+* --- MSCI: one row per cusip_8 × year ---
+preserve
+use `"`msci_file'"', clear
+capture confirm variable cusip_8
+if _rc gen cusip_8 = substr(cusip, 1, 8)
+capture confirm variable year
+if _rc {
+    capture confirm variable fyear
+    if !_rc gen year = fyear
+}
+duplicates drop cusip_8 year, force
+tempfile msci_temp
+save `msci_temp'
+restore
+
+merge 1:1 cusip_8 year using `msci_temp', keep(1 3) nogen
+capture confirm variable vs_4
+if _rc gen double vs_4 = environmental_pillar_score
+else replace vs_4 = environmental_pillar_score if missing(vs_4) & !missing(environmental_pillar_score)
+
+capture confirm variable vs_6
+if _rc gen double vs_6 = social_pillar_score
+else replace vs_6 = social_pillar_score if missing(vs_6) & !missing(social_pillar_score)
+log_sample, step("After MSCI merge")
+
+* --- CEO comp: legacy merge_aug keeps one firm-year after sort (here: 1:1 after dedupe) ---
+preserve
+use `"`ceo_comp_file'"', clear
+capture confirm variable cusip_8
+if _rc gen cusip_8 = substr(cusip, 1, 8)
+capture confirm variable year
+if _rc {
+    capture confirm variable fyear
+    if !_rc gen year = fyear
+}
+capture confirm variable total_curr_comp
+if !_rc gsort cusip_8 year -total_curr_comp
+else {
+    capture confirm variable ceo_name
+    if !_rc sort cusip_8 year ceo_name
+    else sort cusip_8 year
+}
+duplicates drop cusip_8 year, force
+tempfile ceo_temp
+save `ceo_temp'
+restore
+
+merge 1:1 cusip_8 year using `ceo_temp', keep(1 3) nogen
+log_sample, step("After CEO compensation merge")
+
+capture {
+    gen emp_kld = emp_str_num1 - emp_con_num1
+    gen env_kld = env_str_num1 - env_con_num1
+    gen kld_es_total = env_kld + emp_kld
+}
+
+capture {
+    replace ceo_gender = "1" if ceo_gender == "MALE"
+    replace ceo_gender = "0" if ceo_gender == "FEMALE"
+    destring ceo_gender, replace
+}
+
+sort gvkey year
+by gvkey: gen double _l_she  = she[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double _l_che  = che[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double _l_dltt = dltt[_n-1] if year[_n-1] == year - 1
+by gvkey: gen double _l_dlc  = dlc[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double _l_sale = sale[_n-1] if year[_n-1] == year - 1
+gen double noa = (_l_she - _l_che + _l_dltt + _l_dlc) / _l_sale ///
+    if !missing(_l_she) & !missing(_l_sale) & _l_sale > 0
+drop _l_she _l_che _l_dltt _l_dlc _l_sale
+
+by gvkey: gen double _l_sale2 = sale[_n-1] if year[_n-1] == year - 1
+bysort sic_2 year: egen double _sic2_total_l_sale = total(_l_sale2)
+gen double mkt_share = _l_sale2 / _sic2_total_l_sale if _sic2_total_l_sale > 0
+drop _l_sale2 _sic2_total_l_sale
+
+gen byte loss = (ni < 0) if !missing(ni)
+bysort sic_2 year: egen double aver_roa = mean(roa)
+gen double adj_roa = roa - aver_roa
+
+gen byte industry_type = 0
+replace industry_type = 1 if inrange(sic_num, 2100, 2199)
+replace industry_type = 1 if inrange(sic_num, 3760, 3769) | sic_num == 3795 | inrange(sic_num, 3480, 3489)
+replace industry_type = 1 if inrange(sic_num, 800, 899) | inrange(sic_num, 1000, 1119) | inrange(sic_num, 1400, 1499)
+replace industry_type = 1 if sic_num == 2080 | inrange(sic_num, 2082, 2085)
+replace industry_type = 1 if culpa == 1
+
+isid gvkey year
+
+compress
+save "$PROJ_DATA\playboard_v3.dta", replace
+display as text ">>> Part 2 done: playboard_v3.dta"
+
+
+/* ====================================================================
+   PART 3: FIRM AGE, DUALITY → FINAL FIRM-YEAR PANEL
+   ==================================================================== */
+display as text _newline ">>> Part 3: Final panel..."
+
+use "$PROJ_DATA\playboard_v3.dta", clear
+xtset gvkey year
+
+preserve
+use `"`firm_age_file'"', clear
+duplicates drop gvkey year, force
+tempfile age_temp
+save `age_temp'
+restore
+merge 1:1 gvkey year using `age_temp', keep(1 3 4 5) keepusing(age) nogen
+
+preserve
+use `"`duality_file'"', clear
+duplicates drop gvkey year, force
+tempfile dual_temp
+save `dual_temp'
+restore
+merge 1:1 gvkey year using `dual_temp', keep(1 3) keepusing(duality) update nogen
+
+capture gen big_n = (au > 0 & au < 9) if !missing(au)
+capture gen big_4 = (au > 3 & au < 9) if !missing(au)
+capture gen firm_age = age
+
+sort gvkey year
+by gvkey: gen double _l_at = at[_n-1] if year[_n-1] == year - 1
+gen double growth_asset = (at - _l_at) / _l_at if !missing(_l_at) & _l_at > 0
+drop _l_at
+
+capture drop vs_11
+gen double vs_11 = vs_4 + vs_6 if !missing(vs_4) & !missing(vs_6)
+
+sort gvkey year
+isid gvkey year
+
+compress
+save "$PROJ_DATA\final_analysis_v3.dta", replace
+display as text ">>> Part 3 done: final_analysis_v3.dta (firm-year panel)"
+display as text ">>> Merge v3 finished: $S_DATE $S_TIME"
+log close

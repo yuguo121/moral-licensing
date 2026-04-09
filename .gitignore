@@ -1,0 +1,25 @@
+# --- Local / large data (not for GitHub) ---
+# Junction target: clone 后在本机执行 mklink 将 data/raw 指向 D:\Research\Data（见 data/README.md）
+data/raw/
+
+# 处理后的 .dta、中间文件等（默认全部忽略）
+data/processed/*
+!data/processed/.gitkeep
+
+# Stata 数据集通常较大，默认不提交（若确需提交某个 .dta，使用 git add -f）
+*.dta
+
+# Stata 日志与临时文件
+*.smcl
+*.log
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/

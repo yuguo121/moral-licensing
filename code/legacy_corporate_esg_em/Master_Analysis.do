@@ -1,4 +1,11 @@
-﻿/* ====================================================================
+﻿* =============================================================================
+* 【早期版本】来源项目：Corporate ESG and EM
+* 现位置：Moral Lisensing/code/legacy_corporate_esg_em/
+* 说明：保留作历史对照；路径与变量名可能仍为旧项目设定，运行前请自行核对。
+* 主线分析请使用：code/Master_Analysis.do 或 Master_Analysis_v2.do 等。
+* 迁入日期：2026-04-01
+* =============================================================================
+/* ====================================================================
    MASTER ANALYSIS DO FILE
    Project: Corporate ESG and EM
    Merged from: da_aug.do, merge_aug.do, moderator_sep.do, final_reg.do
@@ -24,26 +31,12 @@ capture log close
    0. SETTINGS & PATHS
    ==================================================================== */
 
-* -----------------------------------------------------------------------
-* PROJECT PATHS
-* ROOT      : 鏈」鐩牴鐩綍锛圡oral Lisensing锛?* RAW_DATA  : D鐩樺叕鍏卞師濮嬫暟鎹洰褰曪紙鍚勯」鐩叡浜級
-* PROJ_DATA : 鏈」鐩嫭鏈夋暟鎹紙msci_esg, duality_sup锛?* OUTPUT    : 鍥炲綊缁撴灉杈撳嚭鐩綍
-* -----------------------------------------------------------------------
-global ROOT      "c:\Users\HuGoL\OneDrive - HKUST (Guangzhou)\PhD\3_Research\Moral Lisensing"
-global RAW_DATA  "$ROOT\data\raw"
-global PROJ_DATA "$ROOT\data\processed"
-global OUTPUT    "$ROOT\output"
+* Define global paths - MODIFY THESE AS NEEDED
+global ROOT "c:\Users\HuGoL\OneDrive - HKUST (Guangzhou)\Research Project\Corporate ESG and EM"
+global RAW_DATA "E:\empirical_study\data_raw" 
 
-* -----------------------------------------------------------------------
-* RAW DATA 鏂囦欢鏄犲皠锛堜粠鏃ц矾寰?E:\empirical_study\data_raw\ 鏇存柊锛?* cmm_raw.dta              鈫?$RAW_DATA\Financials\compustat_80_25.dta
-* crsp_merged_final_*.dta  鈫?$RAW_DATA\ESG\kld_zy.dta  锛堥渶鏍稿疄鍙橀噺鍚嶏級
-* io.dta                   鈫?$RAW_DATA\Financials\io.dta
-* ceo_compensation.dta     鈫?$RAW_DATA\CEO\execucomp_raw.dta 锛堥渶鏍稿疄鍙橀噺鍚嶏級
-* firm_age.dta             鈫?$RAW_DATA\firm_age.dta
-* -----------------------------------------------------------------------
-
-cd "$ROOT\code"
-log using "$ROOT\code\analysis_log.log", replace
+cd "$ROOT"
+log using "analysis_log.log", replace
 
 
 /* ====================================================================
@@ -51,7 +44,7 @@ log using "$ROOT\code\analysis_log.log", replace
    ==================================================================== */
 display as text ">>> Starting Part 1: DA Calculation..."
 
-use "$RAW_DATA\Financials\compustat_80_25.dta", clear  // ?cmm_raw.dta
+use "$RAW_DATA\cmm_raw.dta", clear
 
 * --- 1.1 Industry Classification (FF48) ---
 gen sic_num = sic
@@ -110,7 +103,7 @@ replace industry = "48 Other" if industry == ""
 rename industry ff48
 
 * --- 1.2 Sample Filtering ---
-* Exclude financials (SIC 6000鈥?999)
+* Exclude financials (SIC 6000–6999)
 drop if sic >= 6000 & sic <= 6999
 * Note: Utilities (4910-4939) check commented out in original, kept as is.
 
@@ -196,7 +189,7 @@ foreach m of local measures {
     drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_2 _b_iv_3 _b_cons non_ac
 }
 
-save "$ROOT\data\dv_em_temp.dta", replace
+save "dv_em_26_temp.dta", replace
 display as text ">>> Part 1 Completed. Saved dv_em_aug_temp.dta"
 
 
@@ -205,30 +198,31 @@ display as text ">>> Part 1 Completed. Saved dv_em_aug_temp.dta"
    ==================================================================== */
 display as text ">>> Starting Part 2: Merging Datasets..."
 
-use "$ROOT\data\dv_em_temp.dta", clear
+use "dv_em_26_temp.dta", clear
 gen year = fyear
 
 * --- 2.1 Merging with Raw Datasets ---
-* KLD / CRSP Merged锛堝師 crsp_merged_final_zhangyue.dta锛岄渶鏍稿疄鍙橀噺鍚嶄笌 kld_zy.dta 鏄惁涓€鑷达級
-merge 1:1 cusip_8 fyear using "$RAW_DATA\ESG\kld_zy.dta", ///
+* CRSP / Compustat Merged
+merge 1:1 cusip_8 fyear using "$RAW_DATA\crsp_merged_final_zhangyue.dta", ///
     nogen keep(1 3 4 5) keepusing(state env_* com_* hum_* emp_* div_* pro_* cgov_* alc_* gam_* mil_* nuc_* tob_* kld_* bod_* vs_1-vs_6) update
 
 * IO (Institutional Ownership)
-merge 1:1 cusip_8 fyear using "$RAW_DATA\Financials\io.dta", keepus(per_*) keep(1 3) nogen
+merge 1:1 cusip_8 fyear using "$RAW_DATA\io.dta", keepus(per_*) keep(1 3) nogen
 
 
 * Culpability KLD (Constructed from KLD items: Alcohol, Gambling, Military, Nuclear, Tobacco)
-* "tobacco鈥? 鈥渇irearms鈥? 鈥渕ilitary鈥? 鈥渁lcohol,鈥?or 鈥済ambling鈥?
+* "tobacco”, “firearms”, “military”, “alcohol,” or “gambling”"
 * User specified variables: alc_* gam_* mil_* nuc_* tob_* 
 gen culpa = 0
 foreach v of varlist alc_* gam_* mil_* nuc_* tob_* {
     replace culpa = 1 if `v' == 1
 }
 
-* MSCI锛堥」鐩嫭鏈夋暟鎹紝瀛樻斁鍦?data/ 鐩綍锛?capture merge 1:1 cusip_8 year using "$PROJ_DATA\msci_esg.dta", keep(1 3) nogen
+* MSCI
+capture merge 1:1 cusip_8 year using "msci_esg.dta", keep(1 3) nogen
 
-* CEO Compensation锛堝師 ceo_compensation.dta锛岄渶鏍稿疄鍙橀噺鍚嶄笌 execucomp_raw.dta 鏄惁涓€鑷达級
-merge 1:n cusip_8 year using "$PROJ_DATA\ceo_compensation.dta", nogen keep(1 3)
+* CEO Compensation (1:m merge)
+merge 1:n cusip_8 year using "$RAW_DATA\ceo_compensation.dta", nogen keep(1 3)
 
 * --- 2.2 KLD and Variable Construction ---
 drop emp
@@ -278,7 +272,7 @@ replace industry_type = 1 if sic == 2080 | inrange(sic, 2082, 2085)
 * Manual flag from 'culpa' variable
 replace industry_type = 1 if culpa == 1
 
-save "$ROOT\data\playboard_temp.dta", replace
+save "playboard_26_temp.dta", replace
 display as text ">>> Part 2 Completed. Saved playboard_26_temp.dta"
 
 
@@ -287,15 +281,15 @@ display as text ">>> Part 2 Completed. Saved playboard_26_temp.dta"
    ==================================================================== */
 display as text ">>> Starting Part 3: Moderator Construction..."
 
-use "$ROOT\data\playboard_temp.dta", clear
+use "playboard_26_temp.dta", clear
 xtset gvkey year // Use consistent ID
 
 * --- 3.1 Big N Auditors & Firm Age ---
 * Merge Firm Age
 merge 1:1 gvkey year using "$RAW_DATA\firm_age.dta", keep(1 3 4 5) keepusing(age) nogen
 
-* Merge supplementary duality data锛堥」鐩嫭鏈夋暟鎹級
-merge 1:1 gvkey year using "$PROJ_DATA\duality_sup.dta", keep(1 3) keepusing(duality) update
+* Merge supplementary duality data (if available)
+merge 1:1 gvkey year using "duality_sup.dta", keep(1 3) keepusing(duality) update
 
 
 gen big_n = au > 0 & au < 9
@@ -331,7 +325,7 @@ label var under_duration "Consecutive years of underperformance"
 
 
 
-save "$ROOT\data\final_analysis.dta", replace
+save "final_26_temp.dta", replace
 display as text ">>> Part 3 Completed. Saved final_26_temp.dta"
 
 
@@ -340,7 +334,7 @@ display as text ">>> Part 3 Completed. Saved final_26_temp.dta"
    ==================================================================== */
 display as text ">>> Starting Part 4: Regression Analysis..."
 
-use "$ROOT\data\final_analysis.dta", clear
+use "final_26_temp.dta", clear
 
 * --- 4.1 Variable Preparation & Labeling ---
 * Generate composite ESG score before regressions
@@ -404,7 +398,7 @@ foreach v in vs_11 vs_4 vs_6 {
 
 * --- 4.3 Consolidated Output (Main Table) ---
 * Export to RTF (with CEO controls)
-esttab m_vs_11 m_vs_4 m_vs_6 i_vs_11 i_vs_4 i_vs_6 using "$OUTPUT\Master_Results.rtf", ///
+esttab m_vs_11 m_vs_4 m_vs_6 i_vs_11 i_vs_4 i_vs_6 using "Master_Results.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
@@ -438,7 +432,7 @@ foreach v in vs_11 vs_4 vs_6 {
 }
 
 * Export to RTF (Excluding CEO Age and Gender)
-esttab m_vs_11_nc m_vs_4_nc m_vs_6_nc i_vs_11_nc i_vs_4_nc i_vs_6_nc using "$OUTPUT\Master_Results_no_CEO.rtf", ///
+esttab m_vs_11_nc m_vs_4_nc m_vs_6_nc i_vs_11_nc i_vs_4_nc i_vs_6_nc using "Master_Results_no_CEO.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
@@ -497,7 +491,7 @@ quietly estadd local fe_firm "Yes"
 quietly estadd local matching "EBM"
 
 * Export to RTF (Entropy Balance Results)
-esttab m1_eb m2_eb using "$OUTPUT\Master_Results_Entropy.rtf", ///
+esttab m1_eb m2_eb using "Master_Results_Entropy_vs4.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Interaction") ///
@@ -515,14 +509,14 @@ display as text ">>> Generating Table 1: Descriptive Statistics and Correlations
 * 1. Descriptive Statistics
 eststo clear
 estpost summarize ko_da_sic vs_4 vs_6 industry_type under_duration_c $ctrl, listwise
-esttab using "$OUTPUT\Table1_Descriptive_Stats.rtf", replace ///
+esttab using "Table1_Descriptive_Stats.rtf", replace ///
     cells("count mean(fmt(3)) sd(fmt(3)) min(fmt(3)) max(fmt(3))") ///
     noobs label title("Table 1: Descriptive Statistics")
 
 * 2. Correlation Matrix
 eststo clear
 estpost correlate ko_da_sic vs_4 vs_6 industry_type under_duration_c $ctrl, matrix listwise
-esttab using "$OUTPUT\Table1_Correlation_Matrix.rtf", replace ///
+esttab using "Table1_Correlation_Matrix.rtf", replace ///
     unstack not noobs compress ///
     b(%9.3f) star(* 0.10 ** 0.05 *** 0.01) ///
     label title("Table 1 (Panel B): Correlation Matrix")
@@ -558,7 +552,7 @@ foreach v in vs_11 vs_4 vs_6 {
 }
 
 * Export to RTF (FF48 Results)
-esttab m_vs_11_ff m_vs_4_ff m_vs_6_ff i_vs_11_ff i_vs_4_ff i_vs_6_ff using "$OUTPUT\Master_Results_FF48.rtf", ///
+esttab m_vs_11_ff m_vs_4_ff m_vs_6_ff i_vs_11_ff i_vs_4_ff i_vs_6_ff using "Master_Results_FF48.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
@@ -604,7 +598,7 @@ foreach v in vs_11 vs_4 vs_6 {
 }
 
 * Export to RTF (State*Year FE Results)
-esttab m_vs_11_sy m_vs_4_sy m_vs_6_sy i_vs_11_sy i_vs_4_sy i_vs_6_sy using "$OUTPUT\Master_Results_StateYear.rtf", ///
+esttab m_vs_11_sy m_vs_4_sy m_vs_6_sy i_vs_11_sy i_vs_4_sy i_vs_6_sy using "Master_Results_StateYear.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Main" "Main" "Int" "Int" "Int") ///
@@ -638,7 +632,7 @@ quietly estadd local fe_year "Yes"
 quietly estadd local fe_firm "Yes"
 
 * Export to RTF
-esttab m_em_esg i_em_esg using "$OUTPUT\Master_Results_EM_Lag.rtf", ///
+esttab m_em_esg i_em_esg using "Master_Results_EM_Lag.rtf", ///
     replace b(%9.4f) se(%9.4f) star(* 0.10 ** 0.05 *** 0.01) ///
     label compress nogaps ///
     mtitles("Main" "Interaction") ///
@@ -648,5 +642,3 @@ esttab m_em_esg i_em_esg using "$OUTPUT\Master_Results_EM_Lag.rtf", ///
 
 display as text ">>> Analysis of lagged EM on ESG completed. Results saved to Master_Results_EM_Lag.rtf"
 log close
-
-

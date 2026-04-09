@@ -43,8 +43,8 @@ capture log close
 
 * --- 0.1 Project Paths ---
 global ROOT      "c:\Users\HuGoL\OneDrive - HKUST (Guangzhou)\PhD\3_Research\Moral Lisensing"
-global RAW_DATA  "D:\Research\Data"
-global PROJ_DATA "$ROOT\data"
+global RAW_DATA  "$ROOT\data\raw"
+global PROJ_DATA "$ROOT\data\processed"
 global OUTPUT    "$ROOT\output"
 
 cd "$ROOT\code"

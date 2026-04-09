@@ -1,68 +1,76 @@
-# Corporate ESG Engagement and Earnings Management
+# Corporate ESG Engagement and Earnings Management（Moral Lisensing 主仓库）
 
 ## 项目概述
 
-研究企业 ESG 参与行为与盈余管理（Earnings Management）之间的关系，关注行业罪恶属性（sin industry / industry culpability）的调节作用。
+研究企业 ESG 参与行为与盈余管理（Earnings Management）之间的关系，关注行业罪恶属性（sin industry / industry culpability）的调节作用。本目录作为 **独立 Git 仓库** 使用；代码与文档进 Git，**本地数据不进 Git**（见 `.gitignore` 与 `data/README.md`）。
 
 ---
 
-## 文件结构
+## 文件结构（概要）
 
 ```
 Moral Lisensing/
-├── code/                          # Stata 分析代码
-│   ├── Master_Analysis.do         # 主分析文件（含完整流程 Part 1-8）
-│   ├── da_aug.do                  # [历史] DA 计算（已合并入 Master）
-│   ├── merge_aug.do               # [历史] 数据合并（已合并入 Master）
-│   ├── moderator_sep [Recovered].do  # [历史] 调节变量构造
-│   ├── output_sep*.do             # [历史] 分阶段输出脚本
-│   ├── ko_da_sic*.do              # [历史] 早期 DA 估算脚本
-│   └── final_reg.do               # [历史] 早期回归脚本
-│
-├── data/                          # 本项目独有数据（不在公共 D:\Research\Data\ 中）
-│   ├── msci_esg.dta               # MSCI ESG 评分数据（115 MB）
-│   ├── duality_sup.dta            # CEO 二元性补充数据（303 KB）
-│   │
-│   │── [运行后自动生成，无需手动维护]
-│   ├── dv_em_temp.dta             # Part 1 输出：DA 估算结果
-│   ├── playboard_temp.dta         # Part 2 输出：合并后分析数据
-│   └── final_analysis.dta         # Part 3 输出：含调节变量的最终分析数据集
-│
-├── output/                        # 回归结果（RTF 格式，可直接粘贴至 Word）
-│   ├── Master_Results.rtf         # 主回归（含 CEO 控制变量）
-│   ├── Master_Results_no_CEO.rtf  # 稳健性：去除 CEO 变量
-│   ├── Master_Results_FF48.rtf    # 稳健性：FF48 行业分类 DA
-│   ├── Master_Results_StateYear.rtf  # 稳健性：州×年份固定效应
-│   ├── Master_Results_EM_Lag.rtf  # 稳健性：滞后 EM 对 ESG 的影响
-│   ├── Master_Results_Entropy.rtf # 稳健性：熵均衡匹配
-│   ├── Table1_Descriptive_Stats.rtf  # 描述统计
-│   └── Table1_Correlation_Matrix.rtf # 相关系数矩阵
-│
-├── paper/                         # 论文文稿
-│   ├── Corporate ESG..._v3_Rev.docx  # 最新修订版（当前版本）
-│   ├── Corporate ESG..._v3.docx      # v3 基础版
-│   └── v3.pdf
-│
-└── README.md                      # 本文件
+├── code/
+│   ├── Master_Analysis.do          # 主分析（Part 1–8）
+│   ├── Master_Analysis_v2.do       # v2 流程（含 final_analysis_v2.dta）
+│   ├── …                           # 识别策略、IV、DID 等
+│   └── legacy_corporate_esg_em/    # 【早期版本】自「Corporate ESG and EM」迁入的 .do
+├── data/
+│   ├── README.md                   # raw 联接（junction）与路径约定
+│   ├── raw/                        # 目录联接 → 本机 D:\Research\Data（需自行 mklink /J，不提交）
+│   └── processed/                # 项目 .dta（默认不提交，仅 .gitkeep 占位）
+├── output/                         # 回归 RTF / 日志等（按需是否纳入版本控制）
+├── paper/
+└── README.md
 ```
 
 ---
 
-## 数据来源说明
+## 数据与路径约定
 
-所有公共原始数据存放于 `D:\Research\Data\`，运行前请确认以下路径可访问：
+| 全局宏 | 含义 |
+|--------|------|
+| `RAW_DATA` | `$ROOT\data\raw` → 建议用 **junction** 指向 `D:\Research\Data` |
+| `PROJ_DATA` | `$ROOT\data\processed` → `final_analysis_v2.dta`、`msci_esg.dta` 等 |
 
-| 数据集 | D盘路径 | 说明 |
-|--------|---------|------|
-| Compustat 财务数据 | `D:\Research\Data\Financials\compustat_80_25.dta` | 原 `cmm_raw.dta`，1980-2025 |
-| KLD/MSCI KLD 评级 | `D:\Research\Data\ESG\kld_zy.dta` | 原 `crsp_merged_final_zhangyue.dta`，**需核实变量名** |
-| 机构持股（IO） | `D:\Research\Data\Financials\io.dta` | 13F 机构持股比例 |
-| CEO 薪酬 | `data\ceo_compensation.dta` | ⚠️ 本项目独有，存放在 data/ |
-| 公司年龄 | `D:\Research\Data\firm_age.dta` | ✓ 直接可用 |
-| MSCI ESG 评分 | `data\msci_esg.dta` | ⚠️ 本项目独有，存放在 data/ |
-| CEO 二元性补充 | `data\duality_sup.dta` | ⚠️ 本项目独有，存放在 data/ |
+**首次在本机配置 `data\raw`（目录联接）：**
 
-> ⚠️ **注意**：`kld_zy.dta` 和 `execucomp_raw.dta` 是原始数据，变量名可能与旧项目中的处理后版本不同，首次运行 `Master_Analysis.do` 前需核实。
+- **PowerShell**（默认终端不是 cmd 时用这条）：  
+  `New-Item -ItemType Junction -Path "…\Moral Lisensing\data\raw" -Target "D:\Research\Data"`
+- **cmd**：`mklink /J "…\data\raw" "D:\Research\Data"`  
+  在 PowerShell 里调用 cmd：`cmd /c 'mklink /J "…" "D:\Research\Data"'`
+
+若已存在空的 `data\raw` 文件夹，请先删除再执行。完整说明见 `data/README.md`。
+
+**公共原始数据（联接后位于 `data\raw` 下）示例：**
+
+| 数据集 | 相对路径（在 `data\raw` 下） | 说明 |
+|--------|------------------------------|------|
+| Compustat | `Financials\compustat_80_25.dta` | DA 等 |
+| KLD | `ESG\kld_zy.dta` | 变量名需与脚本一致 |
+| IO | `Financials\io.dta` | 机构持股 |
+| Firm age | `firm_age.dta` | |
+
+**本项目处理数据（`data\processed`，不提交）：** `final_analysis_v2.dta`、`msci_esg.dta`、`ceo_compensation.dta`、`duality_sup.dta` 等。
+
+---
+
+## GitHub / 版本控制
+
+- `.gitignore` 已忽略：`data/raw/`、`data/processed/*`（保留 `processed/.gitkeep`）、全局 `*.dta` 等。
+- 克隆仓库后：创建 `data\raw` 联接、在 `data\processed` 放入或生成所需 `.dta`，再运行 Stata。
+
+初始化远程仓库示例（在仓库根目录执行）：
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: code and docs"
+git remote add origin <你的 GitHub 仓库 URL>
+git push -u origin main
+```
+
+分支名可按习惯使用 `master` / `main`。
 
 ---
 
@@ -70,26 +78,30 @@ Moral Lisensing/
 
 ```
 Part 1: DA 计算
-  ├── 输入: compustat_80_25.dta
-  └── 输出: data/dv_em_temp.dta
+  ├── 输入: $RAW_DATA\Financials\compustat_80_25.dta
+  └── 输出: $PROJ_DATA\dv_em_temp.dta
 
 Part 2: 数据合并
-  ├── 输入: dv_em_temp.dta + kld_zy + io + msci_esg + execucomp
-  └── 输出: data/playboard_temp.dta
+  └── 输出: $PROJ_DATA\playboard_temp.dta
 
-Part 3: 调节变量构造
-  ├── 输入: playboard_temp.dta + firm_age + duality_sup
-  └── 输出: data/final_analysis.dta
+Part 3: 调节变量
+  └── 输出: $PROJ_DATA\final_analysis.dta
 
-Part 4-8: 回归分析
-  ├── 输入: final_analysis.dta
-  └── 输出: output/*.rtf
+Part 4–8: 回归 → output/*.rtf
 ```
+
+（具体文件名以 `Master_Analysis.do` / `Master_Analysis_v2.do` 内为准。）
+
+---
+
+## 早期脚本（legacy）
+
+`code/legacy_corporate_esg_em/` 中的文件来自原 **Corporate ESG and EM** 文件夹，**文件头已标注【早期版本】**；路径多为历史机器（如 `E:\empirical_study\data_raw`），仅供对照，**主线请以当前 `Master_Analysis*.do` 为准**。
 
 ---
 
 ## 待确认事项
 
-- [ ] 确认 `compustat_80_25.dta` 是否包含 `cusip`, `fyear`, `at`, `ni`, `oancf` 等 DA 计算所需变量
-- [x] `kld_zy.dta` 变量映射已确认
-- [x] `ceo_compensation.dta` 已放入 `data/`
+- [ ] 确认 `compustat_80_25.dta` 是否包含 DA 所需变量
+- [x] `kld_zy.dta` 变量映射已确认（以当前脚本为准）
+- [x] `ceo_compensation.dta` 等已置于 `data\processed`
