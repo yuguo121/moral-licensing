@@ -105,9 +105,12 @@ label var noa            "Net Operating Assets"
 label var mkt_share      "Market Share"
 label var loss           "Loss Indicator"
 
-label var dss_da_heese      "Signed DA (Heese-aligned)"
-label var dss_da_heese_abs  "|DA| (diagnostic)"
-label var dss_da_heese_plus "DA+ (diagnostic only)"
+capture label var da_dss     "DA, modified Jones; BS TA (no dep)"
+capture label var da_ko      "DA; Jones TA incl. dep"
+capture label var da_yu      "DA; NI-OANCF TA"
+capture label var da_ge      "DA; IBC-OANCF TA"
+capture label var da_dechow  "DA; IB-dCHE TA"
+capture label var dss_da_heese "Same as da_dss"
 label var rem_heese         "REM (Heese-aligned)"
 capture label var ab_prod   "Abnormal Production Costs"
 capture label var ab_disexp_neg "Abnormal Discretionary Expenses (-1)"
@@ -132,8 +135,11 @@ global ctrl_heese mkt_share noa size roa lev
 display as text "  [INFO] Control set: $ctrl"
 display as text "  [INFO] Heese core in set: $ctrl_heese"
 
-local wvars dss_da_heese dss_da_heese_abs dss_da_heese_plus rem_heese ///
-            ab_prod ab_disexp_neg vs_11 vs_4 vs_6 $ctrl
+local wvars rem_heese ab_prod ab_disexp_neg vs_11 vs_4 vs_6 $ctrl
+foreach s in dss ko yu ge dechow {
+    capture confirm variable da_`s'
+    if !_rc local wvars `wvars' da_`s'
+}
 local wvars_exist
 foreach v of local wvars {
     capture confirm variable `v'

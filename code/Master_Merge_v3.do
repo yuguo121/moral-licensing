@@ -139,30 +139,90 @@ display as text "  [INFO] Dropping obs with no prior-year AT (incl. first firm-y
 drop if missing(l_at)
 log_sample, step("After lagged-assets requirement")
 
-by gvkey: gen double dss_ta = ///
-    (act - act[_n-1]) - (lct - lct[_n-1]) - (che - che[_n-1]) + (dlc - dlc[_n-1]) ///
-    if year[_n-1] == year - 1
+* --- TA & accrual regressors (same logic as Master_Analysis.do; diffs only if year[_n-1]==year-1) ---
+by gvkey: gen double d_act  = act  - act[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double d_lct  = lct  - lct[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double d_che  = che  - che[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double d_dlc  = dlc  - dlc[_n-1]  if year[_n-1] == year - 1
+by gvkey: gen double d_revt = revt - revt[_n-1] if year[_n-1] == year - 1
+by gvkey: gen double d_rect = rect - rect[_n-1] if year[_n-1] == year - 1
 
-gen double dss_ta_scaled = dss_ta / l_at
-gen double iv_1  = 1 / l_at
-by gvkey: gen double iv_22 = ///
-    ((revt - revt[_n-1]) - (rect - rect[_n-1])) / l_at ///
-    if year[_n-1] == year - 1
-gen double iv_3  = ppegt / l_at
+gen double dss_ta = d_act - d_lct - d_che + d_dlc if !missing(d_act, d_lct, d_che, d_dlc)
 
-gen byte _heese_da_ok = !missing(dss_ta_scaled, iv_1, iv_22, iv_3)
-bysort sic_2 year: egen _heese_da_n = total(_heese_da_ok)
+capture confirm variable dp
+if !_rc {
+    gen double ko_ta = dss_ta - dp if !missing(dss_ta) & !missing(dp)
+    label var ko_ta "Jones TA: dss_ta - dp"
+}
 
-display as text "  Estimating signed Heese-style DA (SIC-2 × year)..."
-bys year sic_2: asreg dss_ta_scaled iv_1 iv_22 iv_3 if _heese_da_n >= 10
-gen double _nda_heese = _b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons ///
-    if _heese_da_n >= 10
-gen double dss_da_heese = dss_ta_scaled - _nda_heese ///
-    if _heese_da_n >= 10 & !missing(dss_ta_scaled, iv_1, iv_22, iv_3)
-drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons _nda_heese _heese_da_ok _heese_da_n
+capture confirm variable oancf
+if !_rc {
+    gen double yu_ta = ni - oancf if !missing(ni) & !missing(oancf)
+    label var yu_ta "CF accruals: NI - OANCF"
+    capture confirm variable ibc
+    if !_rc {
+        gen double ge_ta = ibc - oancf if !missing(ibc) & !missing(oancf)
+        label var ge_ta "CF accruals: IBC - OANCF (IS-CF match)"
+    }
+}
 
-gen double dss_da_heese_abs  = abs(dss_da_heese)
-gen double dss_da_heese_plus = max(dss_da_heese, 0)
+capture confirm variable ib
+if !_rc {
+    gen double dechow_ta = ib - d_che if !missing(ib) & !missing(d_che)
+    label var dechow_ta "IB - (CHE - L.CHE) = IB - d_che"
+}
+
+* Scaled TA (Master_Analysis-style names + legacy dss_ta_scaled for v3 analysis)
+gen double dv_ta_dss = dss_ta / l_at if !missing(dss_ta) & !missing(l_at)
+gen double dss_ta_scaled = dv_ta_dss
+capture confirm variable ko_ta
+if !_rc gen double dv_ta_ko = ko_ta / l_at if !missing(ko_ta) & !missing(l_at)
+capture confirm variable yu_ta
+if !_rc gen double dv_ta_yu = yu_ta / l_at if !missing(yu_ta) & !missing(l_at)
+capture confirm variable ge_ta
+if !_rc gen double dv_ta_ge = ge_ta / l_at if !missing(ge_ta) & !missing(l_at)
+capture confirm variable dechow_ta
+if !_rc gen double dv_ta_dechow = dechow_ta / l_at if !missing(dechow_ta) & !missing(l_at)
+
+label var dv_ta_dss "dss_ta / lag AT"
+label var dss_ta_scaled "Same as dv_ta_dss (Heese / v3 main DA)"
+
+* Modified-Jones regressors (iv_22 = adjusted revenue change / lag AT)
+gen double iv_1 = 1 / l_at
+gen double iv_22 = (d_revt - d_rect) / l_at if !missing(d_revt) & !missing(d_rect) & !missing(l_at)
+gen double iv_3 = ppegt / l_at
+
+* --- Five modified-Jones DAs (same iv_1, iv_22, iv_3; scaled TA differs) ---
+foreach stub in dss ko yu ge dechow {
+    if "`stub'" == "dss" local dv dv_ta_dss
+    else local dv dv_ta_`stub'
+    capture confirm variable `dv'
+    if _rc continue
+    gen byte _ok = !missing(`dv', iv_1, iv_22, iv_3)
+    bysort sic_2 year: egen _dacnt = total(_ok)
+    display as text "  DA (`stub'): modified Jones on `dv' (SIC-2 × year)..."
+    bys year sic_2: asreg `dv' iv_1 iv_22 iv_3 if _dacnt >= 10
+    gen double _nda = _b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons if _dacnt >= 10
+    gen double da_`stub' = `dv' - _nda if _dacnt >= 10 & !missing(`dv', iv_1, iv_22, iv_3)
+    drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons _nda _ok _dacnt
+}
+
+capture confirm variable da_dss
+if !_rc {
+    label var da_dss "Modified-Jones DA; TA=dv_ta_dss (BS, no dep)"
+    gen double dss_da_heese = da_dss
+    label var dss_da_heese "Alias of da_dss (backward compat)"
+}
+capture confirm variable da_ko
+if !_rc label var da_ko "Modified-Jones DA; TA=dv_ta_ko (Jones + dep)"
+capture confirm variable da_yu
+if !_rc label var da_yu "Modified-Jones DA; TA=dv_ta_yu (NI-OANCF)"
+capture confirm variable da_ge
+if !_rc label var da_ge "Modified-Jones DA; TA=dv_ta_ge (IBC-OANCF)"
+capture confirm variable da_dechow
+if !_rc label var da_dechow "Modified-Jones DA; TA=dv_ta_dechow (IB-dCHE)"
+
+drop d_act d_lct d_che d_dlc d_revt d_rect
 
 gen double sale_scaled = sale / l_at
 by gvkey: gen double d_sale_scaled = (sale - sale[_n-1]) / l_at if year[_n-1] == year - 1
@@ -173,7 +233,11 @@ replace invch = 0 if missing(invch)
 gen double prod_scaled = (cogs + invch) / l_at if !missing(cogs)
 
 replace xrd = 0 if missing(xrd)
-gen double disexp_scaled = (xsga + xrd) / l_at if !missing(xsga)
+* REM discretionary expenses: SG&A + R&D + advertising (xad); xad often 0 if embedded in xsga or undisclosed.
+capture confirm variable xad
+if _rc gen double xad = 0
+else replace xad = 0 if missing(xad)
+gen double disexp_scaled = (xsga + xrd + xad) / l_at if !missing(xsga)
 
 gen byte _prod_ok = !missing(prod_scaled, iv_1, sale_scaled, d_sale_scaled, l_d_sale_scaled)
 gen byte _disx_ok = !missing(disexp_scaled, iv_1, l_sale_scaled)
@@ -196,9 +260,6 @@ drop _Nobs _R2 _adjR2 _b_iv_1 _b_l_sale_scaled _b_cons _normal_disx _prod_ok _di
 gen double ab_disexp_neg = -1 * ab_disexp
 gen double rem_heese = ab_prod + ab_disexp_neg
 
-label var dss_da_heese      "Signed discretionary accruals (Heese-aligned)"
-label var dss_da_heese_abs  "Absolute discretionary accruals (diagnostic)"
-label var dss_da_heese_plus "Positive signed discretionary accruals (diagnostic)"
 label var rem_heese         "REM = AbPROD + AbDISX(-) (Heese-aligned)"
 
 compress
