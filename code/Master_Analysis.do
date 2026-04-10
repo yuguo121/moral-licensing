@@ -1,4 +1,4 @@
-﻿/* ====================================================================
+/* ====================================================================
    MASTER ANALYSIS DO FILE
    Project: Corporate ESG and EM
    Merged from: da_aug.do, merge_aug.do, moderator_sep.do, final_reg.do
