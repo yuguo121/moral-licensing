@@ -1,0 +1,920 @@
+Corporate Social Responsibility and Earnings
+Management: Evidence from Asian Economies
+Bert Scholtens 1* and Feng-Ching Kang 2
+1University of Groningen - Energy and Sustainability Centre, the Netherlands
+2National Chung Cheng University Ming-Hsiung Chia-Yi, Taiwan
+ABSTRACT
+We investigate how earnings management is associated with corporate social responsibility
+(CSR) and investor protection with 139ﬁrms in ten Asian countries. In Asia, CSR is increasingly
+attracting attention but the legal system generally is perceived as being poor. We hypothesize
+that there is an inverse relationship between CSR and earnings management, as well as
+between investor protection and earnings management. Regarding earnings management,
+we investigate earnings smoothing and earnings aggressiveness. We ﬁnd that Asian ﬁrms
+with relatively good CSR are engaged signi ﬁcantly less with earnings management. Investor
+protection also is negatively associated with earnings management. We ﬁnd that this is
+very case sensitive and depends on the ways in which earnings management and investor
+protection are actually measured. In addition, we establish that CSR shows positive interaction
+with investor protection. We conclude that in Asian countries CSR moderates ﬁrms’ earnings
+management and that this is conditioned by the legal system. Copyright © 2012 John Wiley
+& Sons, Ltd and ERP Environment.
+Received 3 November 2011; revised 27 January 2012; accepted 7 February 2012
+Keywords: Asian ﬁrms; corporate social responsibility (CSR); earnings management; investor protection
+Introduction
+W
+E INVESTIGATE HOW CORPORATE SOCIAL RESPONSIBILITY (CSR) CONNECTS WITH EARNINGS MANAGEMENT IN ASIA.
+Firms have strong incentives to manage their earnings in order to exceed expectations of market
+participants (Bernhardt and Campello, 2007). They can do so by raising earnings via accounting
+methods, by increasing accruals, and by postponing expenses. Alternatively, they may induce analysts
+to issue lower earnings forecasts (Gonget al., 2008). Earnings management is an agency cost because managers pursue
+their own interest to the detriment of stakeholders (Baiman, 1990; Mouck, 2004; Koch and Schmidt, 2010). However,
+it also is unethical and therefore irresponsible behavior. Legal protection of investor rights can be a means forﬁnancial
+stakeholders to improve their grip on the ﬁrm and to safeguard their claim. For example, Gompers et al .( 2 0 0 3 )
+establish a positive relationship between corporate governance and ﬁnancial performance. La Porta et al. (1998) show
+that investor protection is a signiﬁcant factor with respect to stockmarket development, corporate governance, andﬁrm
+valuation. They also ﬁnd that legal protection is relatively weak in most Asian countries. This is conﬁrmed in the study
+*Correspondence to: Bert Scholtens, University of Groningen - Energy and Sustainability Centre, Groningen, the Netherlands. E-mail: l.j.r.scholtens@
+rug.nl
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment
+Corporate Social Responsibility and Environmental Management
+Corp. Soc. Responsib. Environ. Mgmt. 20, 95–112 (2013)
+Published online 9 March 2012 in Wiley Online Library
+(wileyonlinelibrary.com) DOI: 10.1002/csr.1286
+by Welford (2007). We will investigate the interaction between investor protection, CSR, and earnings management in
+Asia.
+Most of the academic CSR literature focuses on industrialized countries (Dobers and Halme, 2009; Wood,
+2010). However, increasingly, the literature investigates particular aspects of CSR in Asia too. Welford and Frost
+(2006) focus on CSR in Asian supply chains. Baughn et al. (2007) examine social and environmental CSR in Asia.
+Lee (2007) investigates top managers ’ understanding and commitment to CSR in the Korean electronics industry.
+Hossain and Reaz (2007) study the drivers of voluntary disclosure by Indian banks. Cummings (2008) surveys the
+attitudes of corporate managers and managerial students across Australia, PR of China, and Indonesia toward con-
+temporary environmental management issues. Naeem and Welford (2009) compare CSR between companies in
+Bangladesh and Pakistan. Othman and Ameer (2010) report on environmental reporting of palm oil plantations
+in Malaysia. Kolk et al. (2010) analyze CSR of Chinese retailers. We want to complement this literature and inves-
+tigate how Asian ﬁrms perform with respect to earnings management in connection with their CSR performance.
+Therefore, we aim to investigate CSR and the legal system within the context of earnings management in Asia.
+According to institutional stakeholder theory, CSR could be a means to reduce agency costs (Jones, 1995). Wood
+(2010) describes the conceptual history of CSR and shows how CSR can be regarded as a set of structural categories
+that can be identi ﬁed, described, and measured. She concludes that a major problem CSR scholars face is the lack of
+access to good data. Blow ﬁeld and Murray (2008) ﬁnd that CSR de ﬁnitions share the belief that companies have a
+responsibility for the common good and that CSR actions are basically voluntary, i.e. they go beyond what is legally
+required. But they emphasize different elements of this responsibility, especially environmental, ethical, social, and
+governance issues. Blowﬁeld and Murray (2008) ﬁnd that how companies highlight responsibility is gauged by how
+they listen and respond to stakeholders ’ concerns. The main areas of CSR appear to be leadership, vision and
+values, marketplace activities, workforce activities, su pply chain activities, stakeholder engagement, community
+activities, and environm ental activities (Blow ﬁe l da n dM u r r a y ,2 0 0 8 ) .C S Rh o l d st h a tﬁrms voluntarily integrate
+economic, social, and environmental concerns in their ope rations and interactions with stakeholders (Branco and
+Rodrigues, 2006), and maximize the synergies in this triple bottom line (Elkington, 1994; Dyllick and Hockerts, 2002;
+Collison et al., 2003). Several studies ﬁnd that CSR interacts with accounting (Margolis and Walsh, 2003; Richardson
+and Welker, 2001; Messner, 2009; Blomgren, 2011). More speciﬁcally, it appears that a high standard of CSR is to be
+positively associated with high accounting quality of theﬁrm (Laux and Leuz, 2009; Carnegie and Napier, 2010).
+Asia is of particular interest in this respect as it is characterized by a high concentration of ownership and control of
+corporations and banks by families (Millar et al., 2005; Stein and Rose ﬁelde, 2005). In general, the conventional view
+holds that corporate governance in Asia is relatively poor (La Porta et al . ,1 9 9 8 ;W e l f o r d ,2 0 0 7 ) .C l a e s s e n se ta l .
+(2000) ﬁnd that in Indonesia, Philippines, and Thailand the largest ten families control half of the corporate sector in
+terms of market capitalization. La Porta et al . (1998) suggest that East Asian corporations often operate in an
+environment with weak legal systems, poor law enforcement, and corruption. Fan and Wong (2002) study seven East
+Asian economies and report that a high concentration of ownership increases the incentives for managers to control
+earnings, and to reduce the quality of accounting earnings. These ﬁndings suggest that earnings management might
+be a problem too in Asian countries. Then, CSR in Asia is of particular interest given the different cultural and societal
+values in combination with the stages of development (Welford and Frost, 2006; Baughn et al., 2007; Chapple and
+Moon, 2007; Welford, 2007).
+The purpose of this paper is to examine how CSR and investor protection relate to earnings management practices in
+Asia. To this extent, we will investigate ﬁrms from ten countries in the period 2004 –2 0 0 9 .W el o o ki n t os e v e r a l
+measures of earnings management and a pply a multiple regression approach, next to a statistical analysis of the
+distribution of (changes in) earnings decreases. The structure of the remainder of the paper is as follows. The next section
+provides a brief overview of the literature and lays the foundation for the hypotheses we present. We then introduce the
+model and the methodology and discuss the data used. Finally, we present the results and our conclusions.
+Background
+From the accounting scandals with Enron, WorldCom, Ahold, Tyco, and Xerox, it appears that several insiders have
+been using their discretion in computing earnings to mislead outsiders (Laux and Leuz, 2009; Sikka, 2009; Carnegie
+96 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+and Napier, 2010). Healy and Wahlen (1999) de ﬁne earnings management as the alteration of ﬁrms’ reported
+economic performance by insiders to either ‘mislead some stakeholders ’ or to ‘inﬂuence contractual outcomes ’.
+Burgstahler and Dichev (1997) pay attention to ﬁrms manipulating earnings in order to ‘avoid’ losses. Jiraporn et al.
+(2008) see ‘adding’ information as an additional motive. Several studies ﬁnd that manipulation occurs in order to
+‘meet’ market expectations (Teoh et al., 1998; DeGeorge et al., 1999; Königsgruber, 2009).
+Leuz et al. (2003) and Königsgruber (2009) suggest that the economic incentives for earnings management arise
+from a con ﬂict of interest between ﬁrms’ insiders and outsiders and from the expected market reactions to news
+about ﬁnancial performance (MacKinlay, 1997). Jaggi and Tsui (2007) argue that earnings management reduces
+earnings quality. The disclosure of ‘true and fair ’ ﬁnancial earnings is crucial for CSR because it provides outsiders
+with a basis of trust and con ﬁdence regarding the ﬁrm’s claims and operations. This is especially the case because
+CSR is what goes beyond what is required by law and regulation (Heal, 2008). Thus, it seems particularly relevant to
+ﬁnd out how CSR and earnings management connect.
+Although CSR by deﬁnition is not related to ﬁnancial performance, the way in which the two affect each other has
+been studied in great detail in the literature (Grif ﬁn and Mahon, 1997; McWilliams and Siegel, 2001; Margolis and
+Walsh, 2003; Schuler and Cording, 2006). Margolis et al . (2007) perform a meta-analysis on 167 studies of how
+CSR relates to ﬁnancial performance. They ﬁnd that in 58% of the studies, there is a non-signi ﬁcant relationship
+between CSR and ﬁnancial performance. There is a positive relationship in 27% of the studies, and a negative
+relationship in 2% of the studies. The other 13% did not report sample size or other key characteristics that made it
+impossible to test for signi ﬁcance. This suggests that companies do not appear to suffer ﬁnancially from their CSR
+policies and investments. The result will be that in equilibrium there will be no signi ﬁcant difference in the returns
+of responsible investments vis-à-vis irresponsible investments by shareholders. The recent empirical evidence supports
+this conjecture (Galema et al ., 2008). As to causation with ﬁnancial and social performance, Orlitzky et al .( 2 0 0 3 )
+establish a bidirectional and simultaneously positive relationship between CSR and corporate ﬁnancial performance
+(CFP). Hull and Rothenberg (2008) ﬁnd that innovation and the level of differentiation in the industry moderate the
+positive relationship between corporate social and ﬁnancial performance. Scholtens (2008) observes that ﬁnancial
+performance usually occurs before above average social performance for most CSR dimensions, whereas it is the other
+way round with social and ﬁnancial risk.
+Only a few empirical studies examine the relationship between CSR and earnings management. Chih et al.( 2 0 0 8 )
+investigate CSR-related featuresﬁrms in 46 countries and ﬁnd that a ﬁrm with CSR in mind tends to smooth earnings
+less. Furthermore, it also displays less interest in avoiding earnings losses and decreases, but it still is prone to earnings
+aggressiveness. Prior et al. (2008) use a sample of 593 ﬁrms from 26 countries and demonstrate a positive impact of
+earnings management on CSR. These empirical studies relate mostly to ﬁrms in western countries and refrain from
+the typical Asian perspective.
+Institutional stakeholder theory suggests that ﬁrms can reduce transaction and agency costs by taking social
+initiatives that affect stakeholder relations (Jones, 1995). This can be either direct or indirect. The initiatives may directly
+affect the stakeholder if the initiative has a positive contribution to the goals and aims of that stakeholder– for example,
+if a ﬁrm which is partially owned by unions improves health and safety conditions far beyond what is legally required.
+There can also be an indirect effect when the initiatives of the ﬁrm are viewed as a signal of acting in a responsible
+manner. Both channels will result in fewer transaction and agency costs. As such, ﬁrms that engage in CSR will
+establish relative advantages over their competitors with respect to their stakeholders. Furthermore, there is the
+resource-based view of CSR (Russo and Fouts, 1997). Here, CSR actions directly impact on the stakeholder as there
+is assumed to be a positive relationship between ﬁnancial and social performance. Again, there is an indirect channel
+where the governance of the ﬁrm impacts on the reputation of the ﬁrm. This latter view speci ﬁcally stresses the
+ﬁnancial motives of owners. Both the institutional stakeholder theory and the resource-based view of CSR depart from
+the perspective of the ﬁrm. They point out why the ﬁrm might want to engage with CSR in connection with its owners
+and other stakeholders. Businesses which stress their social responsibility tend to signal that they are‘good companies’.
+Therefore, their behavior regarding earnings management may differ from other businesses.
+Compared to western countries, Asian markets are characterized by more severe information asymmetries and
+agency problems (Stein and Roseﬁelde, 2005). La Porta et al. (1998) suggest this in part results from the legal system.
+Welford (2007) points out that the corporate governance of Asianﬁrms is much weaker than those located in traditional
+industrialized countries. The World Bank (http://www.worldbank.org/prospects/gep2000/), characterizes the
+97SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+business system in East Asia by its lack of corporate governance transparency, weak institutional arrangements to
+protect shareholders rights, inadequate ﬁnancial supervision, high leverage of corporations, prolonged moral hazard,
+and ill-established capitalism (Eldomiaty and Choi, 2006). Claessens and Fan (2002) arrive at the following
+characteristics of Asianﬁrms: group afﬁliation, limited corporate disclosure and transparency, and a high concentration
+of ownership. Similarly, ﬁrms controlled by families or the state are quite common in East Asia and these owners
+usually focus on their power of control (Chen et al., 2011). This type of ownership structure can be expected to dilute
+board independence and to reduce board effectiveness (Jaggi and Tsui, 2007). For example, in a case study, Miles
+(2009) ﬁnds that ﬁrms in Hong Kong and Malaysia face problems of transparency and limited independence of board
+members and suggests increased legislation has helped, but progress has been slow. Charoenwong and Jiraporn
+(2009) arrive at similar results for Singapore and Thailand. Wang et al .( 2 0 0 8 )ﬁnd that in China the practice of
+earnings management has gone up recently. Given the asymmetric information betweenﬁrms and investors, accurate
+ﬁnancial reporting tends to be distorted by managers or controlling shareholders (Klein, 2002; Sarkar et al., 2008).
+In addition, CSR is often regarded as a weak link in Asia ’s company performance and economic development
+(Welford and Frost, 2006; Baughn et al., 2007; Welford, 2007; Cummings, 2008; Dobers and Halme, 2009). This
+link is especially pronounced in countries where investor protection is low (Tam and Tan, 2007). As such, we think
+it is very interesting to ﬁnd out about the connection between investor protection, CSR and earnings management in
+Asia. The next section will develop our hypotheses in this respect.
+Hypotheses
+The review above shows that there are several studies that investigate the connection between CSR and earnings
+management. Earnings management is considered to be an agency cost because managers pursue their own
+interests by making up ﬁnancial reports that do not express the real economic situation of the ﬁrm (Shapiro,
+2005; Prior et al ., 2008). Some researchers emphasize particular ways to respond to the agency problems. Fama
+and Jensen (1983) and Roe (1991) suggest an increase in monitoring effectiveness by independent corporate boards.
+Luoma and Goodstein (1999) and Prior et al . (2008) argue it is helpful to reinforce the ﬁrm’s perceived social
+legitimacy. Alternatively, the ﬁrms might improve their CSR (Liu and Lu, 2007; Huang et al., 2008). The latter does
+seem to happen indeed: several researchers ﬁnd that ﬁrms use CSR to reduce con ﬂicts of interest between
+managers and stakeholders (Jensen, 2001; Calton and Payne, 2003; Scherer et al ., 2006; Harjoto and Jo, 2011).
+Here, the main idea is that CSR can mitigate agency problems, especially the agency con ﬂicts between controlling
+shareholders and minority shareholders. As a consequence, CSR may reduce the incentives to manage earnings. On
+the basis of the discussion in the literature, we want to test the hypothesis that earnings management is negatively
+related to CSR:
+H1: Corporate social responsibility is inversely related to earnings management.
+In addition, La Porta et al . (1998) ﬁnd that countries with strong legal protection of investors have more
+developed stock markets, better corporate governance, and higher ﬁrm valuation than countries with weak legal
+(La Porta et al ., 1998; Denis and McCommell, 2003). Leuz et al . (2003) examine whether earnings management
+varies across countries that differ with respect to investor protection. They ﬁnd that earnings management occurs
+less frequently in countries where outside investors have more protection from the country ’s legal system. Welford
+(2007) argues that ownership and control of many ﬁrms in Asia differ from those commonly seen in the West. He
+especially stresses the fact that many Asian companies are dominated by controlling shareholders. This suggests
+that investor protection and corporate governance would need to be even stronger in the Asian region than
+elsewhere. We want to test the hypothesis that the earnings management is negatively related to investor protection:
+H2: Investor protection is inversely related to earnings management.
+The null hypothesis in both instances is that there is no signi ﬁcant relationship between earnings management
+and CSR and between earnings management and investor protection in Asia respectively.
+98 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Model, Methodology, and Data
+In this section, we willﬁrst introduce the way in which we measure earnings management, we motivate our model, and
+we introduce the estimation methodology. We also introduce the data and provide a description of the data sample.
+Earnings Management
+We use different indicators of earnings management. As such, we want to test the robustness of our approach
+regarding the assessment of earnings management in Asia. We will investigate two different measures of earnings
+management, namely earnings smoothing and earnings aggressiveness. Both measures are used a lot in the empirical
+studies on earnings management (Bernhardt and Campello, 2007; Jo and Kim, 2007; Chih et al., 2008; Gong et al.,
+2008). Earnings smoothing relates to concealing shocks to theﬁrm’so p e r a t i n gc a s hﬂows (Leuz et al., 2003). Earnings
+aggressiveness has a different focus as it relates to misstating the actual performance of the ﬁrm (Bhattacharya et al.,
+2003). Thus, instead of relying on one single measure of earnings management, we will provide several alternatives.
+In the ﬁrst place, this is in line with the nuanced discussion about what earnings management actually is (see
+introduction and background section). Secondly, it provides us with a sound idea about the robustness of our results
+for different measures of earnings management.
+Earnings Smoothing
+First, we use two different instruments for earnings smoothing. The ﬁrst instrument (EM1) concentrates on the
+manipulation of earnings in relation to the cash ﬂows of the ﬁrm. With this ﬁrst measure of earnings smoothing,
+we focus on the behavior of insiders who can use their accounting discretion to conceal economic shocks to the ﬁrm’s
+operating cash ﬂows (Leuz et al ., 2003; Laux and Leuz, 2009; Sikka, 2009; Carnegie and Napier, 2010). Because
+accounting earnings are the sum of accruals and cashﬂows from operations,ﬁrms may increase the reporting of future
+revenues or they may delay the reporting of costs to hide poor current performance. Alternatively, insiders may also
+underreport strong performance to create reserves for the future.
+In line with Sloan (1996) and Dechow et al. (2002), we compute the accruals component of earnings as
+Accruals ¼ DCA
+it /C0 DCashitðÞ /C0 DCLit /C0 DSTDit /C0 DTPitðÞ /C0 Depit (1)
+where DCAit is the change in total current assets of ﬁrm i at time t; DCashit is the change in cash, DCLit is the
+change in total liabilities, DSTDit is the change in short-term debt included in current liabilities, DTPit is the
+change in income tax payable, and Dep it is depreciation expenses. After the accruals are obtained, we add cash
+ﬂows from the ﬁrm’s operations to arrive at the operating earnings of the ﬁrm. Hence, our ﬁrst earnings smooth-
+ing measure EM1 is the degree to which insiders use their discretion to alter the accounting component of
+reported earnings. EM1 shows they do so by using the accruals to reduce the variability of operating earnings.
+We de ﬁne:
+EM1 Earnings/C1 smoothingðÞ ¼
+SD operating earningsðÞ
+SD cash flows from operations Þð (2)
+where SD is the standard deviation. Equation (2) reveals that a low value of EM1 indicates insiders use their discretion to
+smooth reported earnings. This is because the volatility of the operating earnings is manipulated with respect to the
+original cash ﬂows. This de ﬁnition is congruent with that of, for example, Leuz et al. (2003), Laux and Leuz (2009),
+Sikka (2009), and Carnegie and Napier (2010). EM1 is a positive number, and a higher score of EM1 represents a lower
+extent of earnings management.
+The second earnings smoothing measure (EM2) focuses on the correlation between the change in accounting
+accruals and the change in operating cash ﬂows (Dechow et al ., 1995; Leuz et al ., 2003; Chih et al ., 2008). The
+magnitude of the correlation between the change in accounting accruals and the change in operating cash ﬂows can
+99SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+reﬂect the smoothing of the reported earnings. This is because EM2 is de ﬁned as one minus the contemporaneous
+correlation between the change in accounting accruals and the change in operating cashﬂow (Jo and Kim, 2007; Chih
+et al., 2008; Gong et al., 2008). Both changes are scaled by the size of the ﬁrm, as measured by total assets. Thus, we
+compute the second indicator of earnings smoothing as
+EM2 Earnings/C1 smoothingðÞ ¼ 1 /C0 Spearman DAccrualsit=TAit/C0 1; DOCFit=TAit/C0 1ðÞ (3)
+where Spearman is the Spearman rank correlation coefﬁcient. The way in which we calculate EM2 implies that a higher
+(lower) extent of earning smoothing represents a higher (lower) extent of earnings management for the ﬁrm. From
+Equation (3) it follows that EM2 lies within the range [0, 2].
+Earnings Aggressiveness
+Next to these two indicators of earnings smoothing, we investigate earnings aggressiveness. Earnings aggressiveness
+in particular relates to the conduct of managers who use their reporting discretion to misstate the ﬁrm’s actual
+performance (Bhattacharya et al ., 2003). We measure earnings aggressiveness of ﬁrm i at time t as the accruals
+divided by lagged total assets (TA it-1)
+EM3 Earnings aggressivenessðÞ ¼ Accrualsit=TAit-1 (4)
+A higher (lower) extent of earning aggressiveness re ﬂects a higher (lower) extent of earnings management for the
+ﬁrm. EM3 can both be a positive and a negative number.
+Thus, we use three different indicators of earnings management: two indicators measure earnings smoothing
+(EM1 and EM2) and one measures earnings aggressiveness (EM3). The next few paragraphs elaborate on how we
+relate earnings management to corporate social responsibility and the legal system and do provide an account
+and motivation of the control variables.
+Model and Methodology
+As we want to ﬁnd out what drives earnings management, we depart from the model by Chih et al . (2008). They
+hypothesize that the relationship between CSR and earnings management can be negative, positive, or neutral
+and investigate mostly industrialized economies. In our study, we limit ourselves to Asian countries and argue that
+differences in investor protection might play a conditioning role. Therefore, we will basically depart from Chih et al.
+(2008) but will account for interaction with investor protection. Another important differences is that they measure
+CSR at the country level by relating the number of listed ﬁrms that are included in sustainability index FTSE4Good
+Global to the total number of listed ﬁrms in that country. In contrast, we analyze CSR at the level of the individual
+ﬁrm and then report our results at the country level.
+We investigate the following aspects: CSR, ﬁrm size, ﬁnancial performance, and leverage as ﬁrm-speciﬁc variables,
+and per capita GDP, in ﬂation, legal enforcement and anti-director rights as the country-speci ﬁc variables. Legal
+enforcement and anti-director rights are two variables that both re ﬂect the degree of investor protection in a country.
+We use multiple regression analysis to ﬁnd out whether there is a signi ﬁcant relationship between corporate social
+responsibility and earnings management. This approach is used in recent papers as well (Jo and Kim, 2007; Hunton
+and Rose, 2008). Our general model is:
+EM
+i ¼ a0 þ a1CSRi;j þ a2/C1 Sizei;j þ a3/C1 ROAi;j þ a4/C1 DEi;j
+þb1/C1 PGDPi þ b2/C1 CPIi þ b3/C1 Legali þ b4/C1 Antidirectori
+þg1/C1 CSRi;j /C3 Sizei;j þ g2/C1 CSRi;j /C3 ROAi;j þ g3/C1 CSRi;j /C3 DEi;j
+þg4/C1 CSRi;j /C3 PGDP þ g5CSRi;j /C3 CPIi þ g6/C1 CSRi;j /C3 Legali
+þg7/C1 CSRi;j /C3 Antidirectori
+(5)
+100 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+where, CSR is the CSR score according to Asia Sustainability Research. Size relates to the size of the ﬁrm and is
+measured by the log of the ﬁrm’st o t a la s s e t s .ROA measures ﬁnancial performance and is the return on assets. DE
+is the debt to equity ratio and measures the risk of the ﬁrm and re ﬂects the ﬁrm’sl e v e r a g e .PGDP is the average of
+GDP per capita from 2004 to 2008, and CPI is the average of in ﬂation rate from 2004 to 2008. Both PGDP and
+CPI are taken from the World Development Index of the World Bank.Legal measures the strength of legal enforcement
+in a country and is calculated as the average of the scores of three legal variables in La Portaet al.( 1 9 9 8 ) ,n a m e l y( 1 )t h e
+efﬁciency of judicial system, (2) an assessment of rule of law, and (3) the corruption index. These three variables range
+from zero to ten, with higher scores reﬂecting a stronger legal system. Anti-director is the Anti-director Rights index for
+country i from La Porta et al. (1998), and is an aggregate measure of minority shareholder rights and ranges from zero
+to six, with higher scores for stronger shareholder rights. We investigate interaction effects in order to assess whether
+CSR has a moderating effect on the other variables. For earnings management EMi, we consecutively use the three
+indicators EM1, EM2, and EM3.
+As discussed above, we hypothesize that the extent of earnings management is inversely related to the extent of CSR.
+We regard earnings management as an act of irresponsibility and as inconsistent with appropriate CSR. Furthermore,
+we expect that the relationship between the two investor protection variables, legal enforcement and anti-director rights,
+and earnings management is negative; this is our second hypothesis. With stronger rights for stakeholders and
+shareholders, the management of the ﬁrm will encounter more dif ﬁculties in managing earnings (La Porta et al .,
+1998). This is conﬁrmed by Leuz et al. (2003) who ﬁnd that earnings management occurs less frequently in countries
+where outside investors are more protected.
+The relationship between ﬁrm size and earnings management is not clear beforehand. Dechow and Dichev (2002)
+show that larger ﬁrms tend to have more stable and predictable operations and hence report smaller amounts of
+discretionary accruals (Kim and Yi, 2006). Thus, larger ﬁrms appear to have an incentive to engage in more earnings
+management. However, at the same time, largerﬁrms usually also are prone to closer scrutiny by outsiders and are re-
+quired to disclose their information more often. Hence, it is more difﬁcult for larger ﬁrms to manage earnings (Lee and
+Choi, 2002; Chih et al., 2008). Given these con ﬂicting ap r i o r iperspectives about the role of ﬁrm size in connection
+with earnings management, their ultimate relationship will have to be decided on the basis of the data.
+Prior studies ﬁnd that earnings management is more prevalent in poorly performing ﬁrms (Kothari et al., 2005;
+Cornett et al ., 2008). This suggests that these ﬁrms manage their income in an opportunistic manner to create
+distortions in the reported earnings. Therefore, we assume that the relationship between leverage and earnings
+management is positive. This is because ﬁrms which are subject to more risk (as re ﬂected in higher leverage) will be
+inclined to manage their earnings more than less risky ﬁrms. For example, Kim and Yi (2006) ﬁnd that Korean ﬁrms
+with high leverage engage more in earnings management than ﬁrms with lower leverage.
+With respect to the role of country-level variables, we arrive at the following notions about their relationship with
+earnings management. We expect that per capita GDP will be negatively related to earnings management. In more
+developed countries, it will be less likely and less accepted that ﬁrms manage earnings (Chih et al., 2008). The relation
+between inﬂation and earnings management may be positive because a rise in the price level makes it more difﬁcult for
+the public and the analysts to see through the ‘veil’ of money.
+Data
+Although CSR is often regarded as a universal concept, one should not neglect the fact that the actual meaning of
+CSR may differ between countries and regions due to varying socio-political and cultural circumstances (Moon,
+2007; Steurer and Konrad, 2009). In addition, CSR can be measured in different ways (Wood, 2010). One approach
+is the balanced scorecard (see Hansen et al. (2010) for an application with regards to Merck in Thailand). However,
+if the aim is to compare a large number of ﬁrms, this approach is not very practical and using CSR ratings is an
+alternative. Another approach is to check whether ﬁrms are included in sustainability indexes. Chih et al . (2008)
+use this indicator. However, then CSR is a yes/no variable. This contrasts with the literature on CSR that suggests
+it rather is a matter of degree (Chatterji et al., 2009). Therefore, we will want to use ﬁrm-speciﬁc data from ratings
+agency. However, this type of information may be imperfect as well (Chatterji et al., 2009). As a consequence, the
+results will have to be interpreted with caution.
+101SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Our data about CSR is adopted from the Asian Sustainability Rating (ASR) report in 2009 which covers 200 ﬁrms
+from ten countries (Australia, China, Hong Kong, India, Japan, Malaysia, Pakistan, Philippines, Singapore and
+Thailand; see www.asiansr.com). To qualify for inclusion in this ASR, companies are assessed on the basis of six
+aspects, namely Governance, Codes, and Policies; CSR Strategy and Communication; Marketplace and Supply Chain;
+Workplace and People; Environment; Community and Development (see Appendix 1). There are 20 ﬁrms in every
+country except Australia (21 ﬁrms) and Thailand (19 ﬁrms). We used Compustat ’s Global Vantage database for
+the ﬁrms’ ﬁnancial data from January 2004 to December 2008 and we average this information. We relate ﬁrm
+performance in 2004–2008 with their CSR for 2008 as reported by ASR in 2009. This is because CSR does not seem
+to ﬂuctuate a lot in short periods of time (Chatterji et al., 2009; Wood, 2010). Furthermore, Scholtens (2008) shows
+that, in general, ﬁnancial performance precedes ﬁrms’ CSR. Combining ﬁnancial and CSR information results in
+losing 61 ﬁrms for which we had no accurate ﬁnancial data and because we excluded ﬁnancial companies like banks,
+insurers, real estate companies, etc. In all, our data covers 139 ﬁrms from ten countries.
+Table 1 gives the descriptive statistics of the CSR score and the three earnings management indicators for the ﬁrms
+in the ten Asian countries. The table shows that the average CSR score in Australia is highest (i.e. best). The lowest score
+is found for ﬁrms in Pakistan. Concerning the measurement of earnings management, recall that a lower score of EM1
+represents a higher extent of earnings management, and that a higher score of EM2 and EM3 express a higher extent of
+earnings management. Earnings smoothing is measured by EM1 and EM2, whereas earnings aggressiveness is
+reﬂected in EM3. The average EM1 is 0.57 and varies from 0.74 in Thailand to 0.38 in Singapore. Therefore, on the
+basis of this indicator of earnings smoothing, earnings management is highest in Singapore and lowest in Thailand.
+Regarding our second indicator of earnings smoothing, we observe that earnings management is undertaken most
+in India and least in Australia. In the case of earnings aggressiveness (EM3),ﬁrms in Pakistan appear to show the most
+earnings aggressiveness and Indian ﬁrms the least. These descriptives already show that there is no simple one-to-one
+relationship between the various ways of measuring earnings management. As such, Table 1 is in support of
+our approach.
+Table 2 presents the descriptives of the other independent (control) variables. It shows that, on average, ﬁrms in
+China and Hong Kong are the largest whereas those in Pakistan are smallest. Returns on assets are by far the highest
+for ﬁrms in Pakistan and lowest in the case of Japanese ﬁrms. Australian ﬁrms show the highest leverage (i.e. most
+risk), whereas the debt ratio is lowest in the case of ﬁrms based in Hong Kong. Per capita GDP was highest in Japan
+and lowest in Pakistan. As to in ﬂation, Table 2 shows that in the period under review, this was highest in Pakistan
+N CSR EM1 EM2 EM3
+Australia 14 64.9 0.541 0.904 0.021
+China 11 40.6 0.607 1.497 0.047
+Hong Kong 11 37.2 0.594 1.477 0.011
+India 16 56.3 0.550 1.763 /C0 0.002
+Japan 16 53.9 0.589 1.458 0.012
+Malaysia 16 36.3 0.684 1.355 0.029
+Pakistan 13 21.4 0.519 1.403 0.097
+Philippine 8 38.7 0.468 1.182 0.086
+Singapore 17 26.9 0.377 1.401 0.051
+Thailand 17 29.9 0.748 1.289 0.019
+Total 139
+Mean 40.62 0.57 1.373 0.037
+Standard Deviation 22.199 0.414 0.562 0.078
+Table 1. Descriptive statistics regarding CSR and earnings management.
+CSR score is based on Asian Sustainability Rating ’s report in 2009. EM1, EM2 and EM3 are the earnings management measures
+deﬁned in this paper. EM1 and EM2 examine earnings smoothing, EM3 examine earnings aggressiveness. Recall that a lower score
+of EM1 represents a higher extent of earnings management, and that a higher score of EM2 and EM3 express a higher extent of
+earnings management.
+102 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+and lowest in Japan. Legal enforcement is strongest in Australia and weakest in the Philippines. Anti-director rights are
+strongest in Hong Kong, India, and Pakistan and weakest in Thailand.
+The correlation matrix between the variables is given in Table 3. There is a positive but insigni ﬁcant positive
+correlation between CSR and EM1. The correlations of the CSR scores with EM2 and EM3 are signi ﬁcantly negative.
+This basically supports the hypothesis that ﬁrms with more earnings management have lower CSR scores. As to the
+investor protection variables, we observe that the sign in general is as was expected. However, only in case of our
+indicator of earnings aggressiveness (EM3) and legal enforcement there is a highly signi ﬁcant inverse relationship.
+In addition, the countries with higher per capita GDP and lower in ﬂation rates have ﬁrms with higher CSR scores.
+For the other variables, we observe that ﬁrm size is negatively correlated with earnings aggressiveness (EM3). That
+is, it appears that larger ﬁrms are less prone to engage in earnings management. This is in line with other studies
+(Dechow and Dichev, 2002; Kim and Yi, 2006). Furthermore, we ﬁnd that the ﬁrm’s size is positively associated with
+per capita GDP and legal enforcement, but signiﬁcantly negative with inﬂation and anti-director rights. In all, our data
+show that there is a lot of variation in the data and that there appears to be little multicollinearity. Therefore, it seems
+that the data from our sample is suitable for the estimation of model(5). The results of the estimations are presented in
+the next section.
+Results
+In this section, we present the results of our analysis. The ﬁndings are reported in Tables 4 –6, which show the
+estimation results of model (5) regarding the indicators of earnings smoothing (EM1 and EM2) and earnings
+aggressiveness (EM3) in connection with CSR and investor protection. Recall that a lower score regarding EM1 points
+at more earnings management, and that a higher score of both EM2 and EM3 signals more earnings management.
+Table 4 gives the estimation results with earnings smoothing (EM1) as the dependent variable. Recall that EM1
+measures the degree to which insiders use their discretion to alter the accounting component of reported earnings.
+N Size ROA (%) Leverage (%) PGDP CPI (%) Legal Anti-director
+Australia 14 9.9 7.7 165.8 23553 4.4 9.5 4
+China 11 12.1 6.7 42.7 1633 5.8 -- --
+Hong Kong 11 12.0 8.2 21.3 31970 0.1 8.9 5
+India 16 5.9 11.8 78.4 635 5.2 5.6 5
+Japan 16 9.0 4.6 64.4 39631 /C0 1.0 9.2 4
+Malaysia 16 9.5 10.5 72.1 4804 6.0 7.7 4
+Pakistan 13 3.4 15.1 35.7 623 9.8 3.7 5
+Philippine 8 4.6 11.5 40.2 1150 5.6 3.5 3
+Singapore 17 9.0 7.5 42.2 27589 2.7 8.9 4
+Thailand 17 11.9 9.1 43.6 2482 4.1 4.9 2
+Total 139
+Mean 8.7 9.3 60.6 14022 4.2 6.9 4
+Standard Deviation 3.0 8.0 115.1 14812 2.9 2.2 0.9
+Table 2. Descriptive statistics in ﬁnancial variables and institutional variables.
+Size is the log of ﬁrm’s total asset. ROA is the average of return of asset. DE ratio is the debt ratio (total debt / total asset). All ﬁnancial
+variables are gotten from the Compustat Global database (2009). PGDP is the average of GDP per capital from 2004 to 2008. CPI is
+the average of consumer inﬂation rate from 2004 to 2008. Both of PGDP and in ﬂation are taken from the World Development Index
+of the World Bank. Legal is the legal enforcement is calculated by the mean score among three legal variables in La Porta et al.( 1 9 9 8 ) :
+(a) the efﬁciency of judicial system, (b) an assessment of rule of law, and (c) the corruption index. All these three variables range from
+zero to ten. Anti-director is the Anti-director Rights index for country from La Porta et al. (1998), and an aggregate measure of minority
+shareholder rights and ranges from zero to six, with higher scores for higher shareholder rights.
+103SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+We ran several speciﬁcations of the model (depicted in columns A–D). Table 4 shows that the coefﬁcients for CSR are
+signiﬁcantly positive in three of the four speci ﬁcations. This suggests that when ﬁrms show better CSR performance,
+they are less likely to engage in earnings smoothing. This is consistent with theﬁndings of Chih et al. (2008) and Prior
+et al. (2008). It also is support for our ﬁrst hypothesis. Furthermore, Table 4 shows that in particular CSR, return on
+assets, legal enforcement, and the interaction between legal enforcement and CSR drive this result. Thus with only have
+partial support for hypothesis two, namely when we use legal enforcement as the investor protection variable. When we
+use anti-director rights, the sign of the coef ﬁcient is as expected, but there is not statistical signi ﬁcance and we must
+reject the hypothesis of an inverse relationship.
+As to the control variables, the coef ﬁcients of total assets are positive but only weakly signi ﬁcant in model (C),
+suggesting that larger ﬁrms tend to do be engaged less in earnings smoothing. This is in line with Dechow and Dichev
+(2002) and Kim and Yi (2006). As to the return on assets, we observe that ﬁrms with better ﬁnancial performance are
+engaged less in earnings smoothing. This con ﬁrms the ﬁndings of Kothari et al . (2005) and Cornett et al . (2008).
+Leverage, per capita GDP, anti-director rights and in ﬂation appear to be insigni ﬁcant variables. Legal enforcement is
+signiﬁcant and positive in most speci ﬁcations. The latter suggests that stronger law enforcement can result in less
+earnings smoothing. This is in line with the results of La Porta et al . (1998). The positive effects of CSR on EM1
+diminish when the measure for legal enforcement increases. That is, ﬁrms with a higher degree of CSR are less
+involved in earnings smoothing. It appears that this effect is more pronounced in countries with stronger law
+enforcement.
+Table 5 gives the estimation results with EM2 as the indicator for earnings smoothing. EM2 is deﬁn e di ss u c haw a y
+that a higher score for EM2 re ﬂects more earnings smoothing. We give the estimation results for four different
+speciﬁcations (A–D). The coef ﬁcients of CSR scores are negative but only weakly signi ﬁcant in column (A), (B), and
+(D). In model (C), the coef ﬁcient is positive but insigniﬁcant. The results suggest that – as in Table 4 – ab e t t e rs c o r e
+on CSR can be associated with less earnings smoothing. They are in line with the observations of Chih et al.( 2 0 0 8 )
+and Prior et al. (2008). They support our ﬁrst hypothesis of an inverse relationship between earnings management
+and CSR. We ﬁnd that Legal enforcement and anti-director rights have the correct sign but are statistically insigniﬁcant.
+Thus, we cannot accept Hypothesis 2.
+TA EM1 EM2 EM3 ROA DE PGDP CPI Legal Anti-director
+CSR Score 0.066 0.146 /C0 0.194** /C0 0.176** 0.069 /C0 0.040 0.171 ** /C0 0.201** 0.256*** 0.118
+TA 0.136 /C0 0.068 /C0 0.216** /C0 0.339*** 0.077 0.289 *** /C0 0.484*** 0.556*** /C0 0.410***
+EM1 /C0 0.386*** 0.030 0.168 /C0 0.039 /C0 0.076 /C0 0.001 /C0 0.034 /C0 0.121
+EM2 0.041 /C0 0.230** 0.115 /C0 0.044 /C0 0.026 /C0 0.050 0.165
+EM3 0.265** /C0 0.090 /C0 0.115 0.229 ** /C0 0.179** 0.005
+ROA /C0 0.227*** /C0 0.267*** 0.300*** /C0 0.292** 0.080
+DE 0.044 0.013 0.132 0.014
+PGDP /C0 0.844*** 0.850*** 0.158*
+CPI /C0 0.695*** 0.105
+Legal 0.193**
+Table 3. Correlation coefﬁcients among all variables across ﬁrms in ten countries.
+***,
+**and
+*represent the level of signi ﬁcance at 0.01, 0.05 and 0.10, respectively.
+CSR score is based on Asian Sustainability Rating ’sr e p o r ti n2 0 0 9 .Size is the log of ﬁrm’s total asset. EM1, EM2,a n d EM3 are the
+earnings management measures de ﬁned in this paper. EM1 and EM2 examine earnings smoothing, EM3 examine earnings
+aggressiveness.ROA is the average of return of asset.DE ratio is the debt ratio (total debt / total asset). Allﬁnancial variables are gotten
+from the Compustat Global database (2009). PGDP is the average of GDP per capital from 2004 to 2008. Inﬂation is the average of
+inﬂation rate from 2004 to 2008. Both of PGDP and in ﬂation are taken from the World Development Index of the World Bank. Legal
+is the legal enforcement is calculated by the mean score among three legal variables in La Portaet al. (1998): (a) the efﬁciency of judicial
+system, (b) an assessment of rule of law and (c) the corruption index. All these three variables range from zero to ten.Anti-directoris the
+Anti-director Rights index for country from La Portaet al. (1998), and an aggregate measure of minority shareholder rights and ranges
+from zero to six, with higher scores for higher shareholder rights.
+104 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Regarding the controls, only ﬁnancial performance is signi ﬁcantly and negatively related to EM2 in a systematic
+manner. This suggests that more pro ﬁtable ﬁrms engage less in earnings smoothing (Kothari et al., 2005; Cornett
+et al., 2008). The leverage variable is positively associated with the dependent variable EM2 in two speci ﬁcations (see
+columns (C) and (D). Thus, more levered – i.e. more risky – ﬁrms are more engaged in earnings smoothing, which
+conﬁrms the results of Kim and Yi (2006). The results in column (C) suggest that a relatively high score on CSR
+somewhat reduces this effect. However, it does not fully neutralize the effect. Interestingly, the legal and anti-
+director variables do not seem to impact on earnings smoothing as measured by EM2; the interaction effects have
+the correct sign but are only marginally signi ﬁcant in the case of anti-director rights.
+The second measure for earnings management is earnings aggressiveness and is calculated as EM3. A higher score
+for EM3 signals more earnings aggressiveness, i.e. more earnings management. We show the estimation results of four
+(A) (B) (C) (D)
+Constant /C0 1.572* /C0 1.433 /C0 1.786** /C0 0.212
+(/C0 1.699) ( /C0 1.640) ( /C0 2.550) ( /C0 0.319)
+CSR 2.284** 2.179** 2.628*** (3.316) 0.941
+(2.100) (2.107) (1.135)
+TA 0.171 0.123 0.341** 0.002
+(0.450) (0.335) (1.940) (0.005)
+ROA 0.417* 0.316*** 0.327*** 0.198*
+(1.959) (2.654) (2.780) (1.848)
+DE /C0 0.052 /C0 0.005 /C0 0.011 /C0 0.010
+(/C0 0.227) ( /C0 0.052) ( /C0 0.111) ( /C0 0.098)
+PGDP /C0 0.827 /C0 0.975 /C0 0.882
+(/C0 1.046) ( /C0 1.312) ( /C0 1.211)
+CPI 0.356 0.251 0.370
+(0.578) (0.425) (0.660)
+Legal 1.208** (2.244) 1.221** (2.340) 1.093** 0.239
+(2.252) (0.787)
+Anti-director 0.068 0.105 0.187 0.129
+(0.204) (0.324) (0.624) (0.460)
+CSR * TA 0.374 0.429 0.599
+(0.572) (0.680) (1.005)
+CSR * ROA /C0 0.158
+(/C0 0.575)
+CSR * DE 0.055
+(0.207)
+CSR * PGDP 1.492 1.694* 1.578
+(1.394) (1.708) (1.620)
+CSR * CPI /C0 0.012 0.076 /C0 0.050
+(/C0 0.021) (0.133) ( /C0 0.093)
+CSR * Legal /C0 3.409** /C0 3.485*** /C0 3.172*** /C0 1.037*
+(/C0 2.574) ( /C0 2.784) ( /C0 2.733) ( /C0 1.705)
+CSR * Anti-director /C0 0.328 /C0 0.427 /C0 0.667 /C0 0.504
+(/C0 0.410) ( /C0 0.563) ( /C0 0.995) ( /C0 0.714)
+Adj-R2 0.08 0.10 0.10 0.07
+N 102 102 102 102
+F-value(p-value) 1.582* 1.822* 1.947** 1.849
+(0.096) (0.051) (0.039) (0.1070)
+Table 4. Estimation results regarding earnings smoothing (EM1). This table gives four speci ﬁcations of the estimation results of
+EM1 = a
+0 + a1CSRi,j + a2Sizei,j + a3ROAi,j + a4DEi,j + b1PGDPi,j + b2CPIi,j + b3Legali,j + b4Anti-directori,j + g 1CSRi,j * Sizei,j + g 2CSRi,j * ROAi,
+j + g 3CSRi,j *D Ei,j + g 4CSRi,j * PGDPi,j + g 5CSRi,j * CPIi,j + g 6CSRi,j * Legali,j + g 7CSRi,j * Anti-directori,j. ***,**and* represent the level
+of signiﬁcance at 0.01, 0.05 and 0.10, respectively. Coef ﬁcients and t-value (in brackets) are reported in table.
+105SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+speciﬁcations (A–D) in Table 6. We observe that the coef ﬁcients of CSR are negative and signi ﬁcant in speciﬁcations
+(A) and (B) and are negative but insigni ﬁcant in the other speci ﬁcations. This only partially supports our ﬁrst
+hypothesis. The results are not fully is congruent with our previous ﬁndings and with those of Chih et al.( 2 0 0 8 )a n d
+Prior et al. (2008). With regard to investor protection, anti-director rights has the expected sign and is signiﬁcant. Thus,
+in countries with strong anti-director rights, earnings aggressiveness appears to be less. This is in support of hypothesis
+two. However, with legal enforcement, there is no support for this hypothesis.
+As to the controls, it shows that the return on assets loads positive and signiﬁcant on earnings aggressiveness. This is
+consistent with the ﬁndings in Tables 4 and 5 and with the literature (Kothari et al., 2005; Cornett et al., 2008). Per
+capita income and in ﬂation also are slightly positive in some instances. The effect of CSR on EM3 increases as anti-
+director rights increase. That is,ﬁrms with a higher score on CSR conduct less earnings aggressiveness, and this effect
+(A) (B) (C) (D)
+Constant 1.875*** 2.625*** 1.505*** 2.793***
+(8.848) (6.553) (3.622) (3.126)
+CSR /C0 0.185* /C0 0.198** 0.270 /C0 1.307*
+(/C0 1.939) ( /C0 2.034) (0.735) ( /C0 1.771)
+TA /C0 0.113 /C0 0.231** 0.073 /C0 0.072
+(/C0 1.140) ( /C0 1.980) (0.370) ( /C0 0.428)
+ROA /C0 0.238** /C0 0.237** /C0 0.403** /C0 0.283**
+(/C0 2.408) ( /C0 2.314) ( /C0 2.128) ( /C0 2.533)
+DE 0.098 0.128 0.490** 0.173*
+(1.017) (1.325) (2.365) (1.793)
+PGDP /C0 0.396** 0.346
+(/C0 2.149) (0.465)
+CPI /C0 0.451** /C0 0.260
+(/C0 2.163) ( /C0 0.414)
+Legal /C0 0.334
+(/C0 0.721)
+Anti-director /C0 0.133
+(/C0 0.402)
+CSR * TA /C0 0.529
+(/C0 1.417)
+CSR * ROA 0.280
+(1.281)
+CSR * DE /C0 0.484**
+(/C0 2.079)
+CSR * PGDP /C0 0.812
+(/C0 0.843)
+CSR * CPI /C0 0.158
+(/C0 0.285)
+CSR * Legal 0.459
+(0.416)
+CSR * Anti-director 1.276*
+(1.836)
+Adj-R2 0.08 0.10 0.15 0.20
+N 106 106 106 99
+F-value (sign) 3.144** 3.007** 3.610*** 3.037***
+(0.018) (0.010) (0.002) (0.001)
+Table 5. Determinants of earnings smoothing (EM2). This table gives four speci ﬁcations of the estimation results of
+EM2 = a
+0 + a1CSRi,j + a2Sizei,j + a3ROAi,j + a4DEi,j + b1PGDPi,j + b2CPIi,j + b3Legali,j + b4Anti-directori,j + g 1CSRi,j * Sizei,j + g 2CSRi,j * ROAi,
+j + g 3CSRi,j *D Ei,j + g 4CSRi,j * PGDPi,j + g 5CSRi,j * CPIi,j + g 6CSRi,j * Legali,j + g 7CSRi,j * Anti-directori,j. ***,**and* represent the level
+of signiﬁcance at 0.01, 0.05 and 0.10, respectively. Coef ﬁcients and t-value (in brackets) are reported in table.
+106 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+is stronger in a country with stronger investor protection. This is in line with our expectations. However, with legal
+enforcement, we do not observe a signi ﬁcant interaction effect.
+The results in Tables 4 –6 suggest that in most cases we ﬁnd support for an inverse relationship between earnings
+management and CSR. As to the relationship between earnings management and investor protection, it really depends
+on the indicator of earnings management and that of investor protection. Thus, it appears that earnings management is
+very sensitive to the exact legal infrastructure. In all, we reject the null of no signi ﬁcant effect for Hypothesis 1. We
+conclude that CSR is to be negatively associated with earnings management for Asian ﬁrms. Furthermore, various
+indicators of earnings management are negatively associated with investor protection, but there is no overall support
+for the hypothesis of an inverse relationship between the two.
+(A) (B) (C) (D)
+Constant 0.071*** /C0 0.009 0.071 0.129
+(/C0 2.622) ( /C0 0.18) (0.466) (0.870)
+CSR /C0 0.184** /C0 0.169** /C0 0.520 /C0 0.830
+(/C0 2.230) ( /C0 2.017) ( /C0 0.537) ( /C0 0.884)
+TA /C0 0.127 /C0 0.039 /C0 0.346 /C0 0.468
+(/C0 1.448) ( /C0 0.391) ( /C0 1.107) ( /C0 1.547)
+ROA 0.226** 0.220** 0.454** 0.207*
+(/C0 2.533) (2.416) (2.442) (1.923)
+DE /C0 0.037 /C0 0.061 0.030 /C0 0.039
+(/C0 0.438) ( /C0 0.722) (0.129) ( /C0 0.435)
+PGDP 0.277* 0.018 0.728
+(1.744) (1.532) (1.141)
+CPI 0.345* 0.853* 0.717
+(1.964) (1.923) (1.643)
+Legal 0.123 0.256
+(0.796) (0.556)
+Anti-director /C0 0.576** /C0 0.556**
+(0.028) ( /C0 2.166)
+CSR * TA 0.650 0.841
+(1.16) (1.551)
+CSR * ROA /C0 0.389
+(/C0 1.624)
+CSR * DE /C0 0.07
+(/C0 0.280)
+CSR * PGDP /C0 0.475 0.018
+(/C0 0.496) (0.020)
+CSR * CPI /C0 0.277 /C0 0.120
+(/C0 0.558) ( /C0 0.246)
+CSR * Legal /C0 0.642 /C0 1.108
+(/C0 0.530) ( /C0 0.972)
+CSR * Anti-director 1.114* 1.076*
+(1.671) (1.674)
+Adj-R2 0.10 0.11 0.13 0.12
+N 134 134 123 123
+F-value 4.586*** 3.752*** 2.214** 2.337*** (0.009)
+(p-value) (0.002) (0.002) (0.010)
+Table 6. Determinants of earnings aggressiveness (EM3). This table gives four speci ﬁcations of the estimation results of
+EM3 = a
+0 + a1CSRi,j + a2Sizei,j + a3ROAi,j + a4DEi,j + b1PGDPi,j + b2CPIi,j + b3Legali,j + b4Anti-directori,j + g 1CSRi,j * Sizei,j + g 2CSRi,j * ROAi,
+j + g 3CSRi,j *D Ei,j + g 4CSRi,j * PGDPi,j + g 5CSRi,j * CPIi,j + g 6CSRi,j * Legali,j + g 7CSRi,j * Anti-directori,j. ***,**and* represent the level
+of signiﬁcance at 0.01, 0.05 and 0.10, respectively. Coef ﬁcients and t-value (in brackets) are reported in the table.
+107SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Conclusion
+This paper examines the interrelationships between CSR, investor protection, and earnings management for 139ﬁrms
+in ten Asian countries. In general, we establish that theseﬁrms’ CSR is inversely related to earnings management. This
+suggests that ﬁrms that perform better on CSR are engaged signi ﬁcantly less in earnings management. This ﬁnding
+relates to different ways of measuring earnings management. If we relate earnings management to investor protection,
+a somewhat mixed pattern emerges. We ﬁnd that with one speciﬁc indicator of earnings management (EM1), it is legal
+enforcement that is inversely related to this earnings management and also signi ﬁcantly conditions CSR. But, in this
+case, anti-director rights do not show a relationship with earnings management, directly or indirectly by conditioning
+CSR. For the other two indicators of earnings management (EM2 and EM3), it exactly is the other way round: Only anti-
+director rights is inversely related to earnings management and is a signiﬁcant conditioning factor with respect to CSR.
+Thus, to some extent, law enforcement and anti-director rights appear to act as substitutes. These ﬁndings are in line
+with the results from previous studies by Chih et al . (2008) and Prior et al. (2008) on geographically more diverse
+samples. Furthermore, they are consistent with the country studies of Kim and Yi (2006) for Korea, Liu and Lu
+(2007) for China, and Charoenwong and Jiraporn (2009) for Singapore and Thailand. We add value to the literature
+by focusing on Asian ﬁrms in ten countries.
+We also ﬁnd that larger ﬁrms are engaged less in earnings smoothing than smaller ﬁrms. This is consistent with
+the ﬁndings of Kothari et al . (2005) and Cornett et al . (2008). Furthermore, ﬁrms with superior ﬁnancial perfor-
+mance engage less earnings smoothing, but they do tend to show earnings aggressiveness. These ﬁndings are in
+line with the results of Leuz et al . (2003), Jaggi and Tsui (2007), and Königsgruber (2009). Regarding the coun-
+try-level variables, the results for the control variables appear to be sensitive to the way in which earnings manage-
+ment is measured. For example, ﬁrms in high-income and low-in ﬂation countries tend to be engaged less in
+earnings smoothing but show more earnings aggressiveness. Another important ﬁnding is that Asian ﬁrms in
+countries with stronger legal enforcement engage in less earnings smoothing (EM1) and this negative effect will
+increase when the ﬁrms have higher CSR scores. These ﬁndings are consistent with the study by Leuz et al .
+(2003) for ﬁrms that are mostly located in industrialized economies and complement the ﬁndings of Baughn
+et al . (2007) and Welford (2007) for Asia.
+The results suggest that CSR is related to ‘real’ actions of the ﬁrm and that it can have an impact. This impact is
+usually conditioned by both ﬁrm and country characteristics. Financial performance and investor protection are the
+most important conditions in this respect. The ﬁ
+ndings provide an empirical basis for institutional stakeholder theory
+which suggests that ﬁrms can reduce the transaction costs by taking social initiatives that connect with stakeholders
+(Jones, 1995). Furthermore, it con ﬁrms the resource-based view of CSR, which holds that CSR action impact on the
+stakeholder because of the positive relationship between ﬁnancial and social performance (Russo and Fouts, 1997).
+We infer several important policy recommendations from our analysis. First, from the perspective of the business
+community, it suggests that investing in CSR can be beneﬁcial for reducing earnings management. Thus, shareholders
+have a case in advancing CSR. However, CSR is not a suf ﬁcient condition to get rid of earnings management.
+Additional effort will be needed. Second, from a public policy perspective, our results suggest that the efforts to advance
+investor protection are useful. However, they turn out to be very speci ﬁc regarding how earnings management is
+actually measured. The combination of anti-director rights and law enforcement is important in this respect. Earnings
+management damages the business climate and, as such, economic and social development. Our study helps
+policymakers in building their case to confront directors on earnings management. A further policy recommendation
+is that there is a case for both the business community and policy makers to promote the reporting of CSR
+performance.
+We want to mention some limitations regarding our study. First is that our data sample is limited. This especially is
+due to the lack of extensive CSR information for Asian ﬁrms. As such, our results need to be regarded as preliminary
+ﬁndings. Second, and relatedly, the data from ASR is backward looking. As such, our results cannot be used to predict
+any future relationships regarding CSR, investor protection and earnings management. Third is that with investor
+protection we ﬁnd that our results are very much dependent on the way in which earnings management is calculated.
+Furthermore, the data limitations restrict us to using rather straightforward estimation techniques. More detailedﬁrm-
+speciﬁc information about Asian companies would allow us to use more advanced techniques. This could provide us
+with a more thorough understanding of the complexities involved.
+108 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+In all, we conclude that corporate social responsibility plays a signi ﬁcant role in moderating earning management
+with Asian ﬁrms. To some extent, this role is conditioned by the legal system. Thus, increasing efforts in both
+improving corporate social responsibility and investor protection may reduce earnings management and advance the
+business climate and economic and social development in Asia.
+References
+Baiman S. 1990. Agency research in managerial accounting: A second look. Accounting, Organizations and Society 15: 414–444.
+Baughn C, Bodie NL, McIntosh JC. 2007. Corporate social and environmental responsibility in Asian countries and other regions. Corporate
+Social Responsibility and Environmental Management 14: 189–205.
+Bernhardt D, Campello M. 2007. The dynamics of earnings forecast management. Review of Finance 11: 287 –324.
+Bhattacharya U, Daouk H, Welker M. 2003. The world of earnings opacity. The Accounting Review 78: 641–678.
+Blomgren A. 2011. Does corporate social responsibility in ﬂuence pro ﬁt margins? A case study of executive perceptions. Corporate Social
+Responsibility and Environmental Management 18: 263–274.
+Blowﬁeld M, Murray A. 2008. Corporate Responsibility: A Critical Introduction. Oxford University Press: Oxford and New York.
+Branco MC, Rodrigues LL. 2006. Corporate social responsibility and resource-based perspective. Journal of Business Ethics 69: 111–132.
+Burgstahler D, Dichev I. 1997. Earnings management to avoid earnings decreases and losses. Journal of Accounting and Economics 24:9 9–126.
+Calton J, Payne S. 2003. Coping with paradox. Business and Society 42:7 –42.
+Carnegie GD, Napier CJ. 2010. Traditional accountants and business professionals: Portraying the accounting profession after Enron. Accounting,
+Organizations and Society 35: 360–376.
+Chapple W, Moon J. 2007. CSR agendas for Asia. Corporate Social Responsibility and Environmental Management 14: 183–188.
+Charoenwong C, Jiraporn P. 2009. Earnings management to exceed thresholds: Evidence from Singapore and Thailand. Journal of Multinational
+Financial Management 19: 221 –236.
+Chatterji AK, Levine D, Toffel MW. 2009. How well do social ratings actually measure corporate social responsibility? Journal of Economics and
+Management Strategy 18: 125–169.
+Chen VZ, Li J, Shapiro DM. 2011. Are OECD-prescribed ‘good corporate governance practices ’ really good in an emerging economy? Asia Paciﬁc
+Journal of Management 28: 115–138.
+Chih HL, Shen CH, Kang FC. 2008. Corporate social responsibility, investor protection, and earnings management: Some international evidence.
+Journal of Business Ethics 79: 179–198.
+Claessens S, Fan PH. 2002. Corporate governance in Asia: A survey. International Review of Finance 3:7 1–103.
+Claessens S, Djankov S, Lang LHP. 2000. The separation of ownership and control in East Asian corporations. Journal of Financial Economics
+58:8 1–112.
+Collison D, Lorraine N, Power D. 2003. An exploration of corporate attitudes to the signi ﬁcance of environmental information for stakeholders.
+Corporate Social Responsibility and Environmental Management 10: 199–211.
+Cornett MM, Marcus AJ, Tehranian H. 2008. Corporate governance and pay-for-performance: The impact of earnings management. Journal of
+Financial Economics 87: 357–373.
+Cummings LS. 2008. Managerial attitudes toward environmental management within Australia, the People ’s Republic of China and Indonesia.
+Business Strategy and the Environment 17:1 6–29.
+Dechow PM, Dichev ID. 2002. The quality of accruals and earnings: The role of accrual estimation errors. The Accounting Review 77:3 5–59.
+Dechow PM, Sloan R, Sweeney A. 1995. Detecting earnings management. The Accounting Review 70: 193–225.
+Degeorge F, Patel J, Zeckhauser R. 1999. Earnings management to exceed thresholds. Journal of Business 72:1 –33.
+Denis DK, McCommell JJ. 2003. International corporate governance. Journal of Financial and Quantitative Analysis 38:1 –36.
+Dobers P, Halme M. 2009. Corporate social responsibility and developing countries. Corporate Social Responsibility and Environmental
+Management 16: 237–249.
+Dyllick T, Hockerts K. 2002. Beyond the business case for corporate sustainability. Business Strategy and the Environment 11: 130–141.
+Eldomiaty TI, Choi CJ. 2006. Corporate governance and strategic transparency: East Asia in the international business systems. Corporate
+Governance: International Journal of Business in Society 6: 281–295.
+Elkington J. 1994. Toward the sustainable corporation: Win-win-win business strategies for sustainable development. California Management
+Review 36:9 0–100.
+Fama E, Jensen MC. 1983. Separation of ownership and control. Journal of Law and Economics 26: 301 –325.
+Fan JPH, Wong TJ. 2002. Corporate ownership structure and the informativeness of accounting earnings in East Asia. Journal of Accounting and
+Economics 33: 401 –425.
+Galema R, Plantinga A, Scholtens B. 2008. The stocks at stake: Return and risk in socially responsible investment. Journal of Banking and Finance
+32: 2646–2654.
+Gompers P, Ishii J, Metrick A. 2003. Corporate governance and equity prices. Quarterly Journal of Economics 118: 107–155.
+Gong G, Henock L, Sun AX. 2008. Earnings management, lawsuits, and stock-for-stock acquirers market performance. Journal of Accounting and
+Economics 46:6 2–77.
+109SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Grifﬁn JJ, Mahon JF. 1997. The corporate social performance and corporate ﬁnancial performance debate: Twenty- ﬁve years of incomparable
+research. Business and Society 36:5 –31.
+Hansen EG, Sextl M, Reichwald R. 2010. Managing strategic alliances through a community-enabled balanced scorecard: The case of Merck Ltd,
+Thailand. Business Strategy and the Environment 19: 387–399.
+Harjoto MA, Jo H. 2011. Corporate governance and CSR nexus. Journal of Business Ethics 100:4 5–67.
+Heal G. 2008. When Principles Pay. Columbia Business School: New York and Chichester.
+Healy P, Wahlen J. 1999. A review of earnings management literature and its implications for standard setting. Accounting Horizons 13: 365–383.
+Hossain M, Reaz M. 2007. The determinants of voluntary disclosure by Indian banking companies. Corporate Social Responsibility and
+Environmental Management 14: 274–288.
+Huang P, Louwers TJ, Mof ﬁtt JS, Zhang Y. 2008. Ethical management, corporate governance, and abnormal accruals. Journal of Business Ethics
+83: 469–487.
+Hull C, Rothenberg S. 2008. Firm performance: The strategic interactions of corporate social performance with innovation and industry
+differentiation. Strategic Management Journal 29: 781 –789.
+Hunton JE, Rose JM. 2008. Can directors self-interests in ﬂuence accounting choices? Accounting, Organizations and Society 33: 783–800.
+Jaggi B, Tsui J. 2007. Insider trading, earnings management and corporate governance: Empirical evidence based on Hong Kong ﬁrm. Journal of
+International Financial Management and Accounting 18: 192–222.
+Jensen MC. 2001. Value maximization, stakeholder theory, and the corporate objective function. Journal of Applied Corporate Finance 14 (3): 8–21.
+Jiraporn P, Miller GA, Yoon SS, Kim YS. 2008. Is earning management opportunistic or bene ﬁcial? An agency theory perspective. International
+Review of Financial Analysis 17: 622–634.
+Jo H, Kim Y. 2007. Disclosure frequency and earnings management. Journal of Financial Economics 84: 561–590.
+Jones TM. 1995. Instrumental stakeholder theory: A synthesis of ethics and economics. Academy of Management Review 20: 404 –437.
+Kim JB, Yi CH. 2006. Ownership structure, business group af ﬁliation, listing status, and earnings management: Evidence from Korea.
+Contemporary Accounting Research 23: 427–464.
+Klein A. 2002. Audit committee, board of director characteristics, and earnings management. Journal of Accounting and Economics 33: 375–400.
+Koch C, Schmidt C. 2010. Disclosing conﬂicts of interest – Do experience and reputation matter? Accounting, Organizations and Society35:9 5–107.
+Kolk A, Hong P, van Dolen W. 2010. Corporate social responsibility in China: An analysis of domestic and foreign retailers ’ sustainability dimen-
+sions. Business Strategy and the Environment 19: 289–303.
+Königsgruber R. 2009. An economic analysis of cross-listing decisions and their impact on earnings quality. Schmalenbach Business Review
+61: 310 –330.
+Kothari SP, Leone AJ, Wasley CE. 2005. Performance matched discretionary accrual measures. Journal of Accounting and Economics 39: 163–197.
+La Porta R, Lopez-de-Silanes F, Shleifer A, Vishny R. 1998. Law and ﬁnance. Journal of Political Economy 104: 1113–1155.
+Laux C, Leuz C. 2009. The crisis of fair-value accounting: Making sense of the recent debate. Accounting, Organizations and Society 34: 826–834.
+Lee KH. 2007. Corporate social responsiveness in the Korean electronics industry. Corporate Social Responsibility and Environmental Management
+14: 219–230.
+Lee BB, Choi B. 2002. Company size, auditor type, and earnings management. Journal of Forensic Accounting 3:2 7–50.
+Leuz C, Nanda D, Wysocki P. 2003. Earnings management and investor protection: An international comparison. Journal of Financial Economics
+69: 505–527.
+Liu Q, Lu Z. 2007. Corporate governance and earnings management in the Chinese listed companies: A tunneling perspective. Journal of
+Corporate Finance 13: 881–906.
+Luoma P, Goodstein J. 1999. Stakeholders and corporate boards: Institutional in ﬂuences on board composition and structure. Academy of
+Management Journal 42: 553–563.
+MacKinlay AC. 1997. Event studies in economics and ﬁnance. Journal of Economic Literature 35:1 3–39.
+Margolis JD, Walsh JP. 2003. Misery loves companies: Rethinking social initiatives by business. Administrative Science Quarterly 48: 268–305.
+Margolis JD, Elfenbein HA, Walsh JP. 2007. Does it pay to be good? A meta-analysis and redirection of research on the relationship between
+corporate social and ﬁnancial performance, working paper. Harvard University, Cambridge, MA.
+McWilliams A, Siegel D. 2001. Corporate social responsibility: A theory of the ﬁrm perspective. Journal of Management Review 26: 117–127.
+Messner M. 2009. The limits of accountability. Accounting, Organizations and Society 34: 918–938.
+Miles M. 2009. Corporate governance in Asia ’s emerging markets: An overview. Review of International Comparative Management 10: 387–396.
+Millar C, Eldomiaty T, Choi CJ, Hilton B. 2005. Corporate governance and institutional transparency in emerging markets. Journal of Business
+Ethics 59: 163–174.
+Moon J. 2007. The contribution of corporate social responsibility to sustainable development. Sustainable Development 15: 296–306.
+Mouck T. 2004. Institutional reality, ﬁnancial reporting and the rules of the game. Accounting, Organizations and Society 29: 525–541.
+Naeem MA, Welford R. 2009. A comparative study of corporate social responsibility in Bangladesh and Pakistan. Corporate Social Responsibility
+and Environmental Management 16: 108 –122.
+Orlitzky M, Schmidt FL, Ryes SL. 2003. Corporate social responsibility andﬁnancial performance: A meta-analysis.Organization Studies24:4 0 3–441.
+Othman R, Ameer R. 2010. Environmental disclosures of palm oil plantation companies in Malaysia: A tool for stakeholder engagement.
+Corporate Social Responsibility and Environmental Management 17:5 2–62.
+Prior D, Surroca J, Tribó JA. 2008. Are socially responsible managers really ethical? Exploring the relationship between earnings management
+and corporate social responsibility. Corporate Governance: An International Review 16: 160–177.
+Richardson AJ, Welker M. 2001. Social disclosure, ﬁnancial disclosure and the cost of equity capital. Accounting, Organizations and Society
+26: 597–616.
+110 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Roe M. 1991. A political theory of American corporate ﬁnance. Columbia Law Review 91:1 0–67.
+Russo MV, Fouts PA. 1997. A resource-based perspective on corporate environmental performance and pro ﬁtability. Academy of Management
+Journal 40: 534–559.
+Sarkar J, Sarkar S, Sen K. 2008. Board of directors and opportunistic earnings management: Evidence from India. Journal of Accounting, Auditing
+and Finance 23: 517–551.
+Scherer A, Palazzo G, Baumann D. 2006. Global rules and private actors, towards a new role of the TNC in global governance. Business Ethics
+Quarterly 16: 502 –532.
+Scholtens B. 2008. A note on the interaction between corporate social responsibility and ﬁnancial performance. Ecological Economics 68:4 6–55.
+Schuler DA, Cording M. 2006. A corporate social performance –corporate ﬁnancial performance behavioral model for consumers. Academy of
+Management Review 31: 540–558.
+Shapiro SP. 2005. Agency theory. Annual Review of Sociology 31:6 3–84.
+Sikka P. 2009. Financial crisis and the silence of the auditors. Accounting, Organizations and Society 34: 868–873.
+Sloan RG. 1996. Do stock prices fully re ﬂect information in accruals and cash ﬂows about future earnings? The Accounting Review 71: 289–315.
+Stein H, Rose ﬁelde S. 2005. Introduction to issues in ﬁnance, corporate control, and growth: Lessons from developing and transitional
+economies. Eastern Economic Journal 31: 210–217.
+Steurer R, Konrad A. 2009. Business-society relations in Central-Eastern and Western Europe: How those who lead in sustainability reporting
+bridge the gap in corporate (social) responsibility. Scandinavian Journal of Management 25:2 3–36.
+Tam OK, Tan MGS. 2007. Ownership, governance and ﬁrm performance in Malaysia. Corporate Governance: An International Review 15: 208–222.
+Teoh SH, Welch I, Wong TJ. 1998. Earnings management and the long-run market performance of initial public offerings. Journal of Finance
+53: 1935–1975.
+Wang Y, Chen SK, Lin BX, Wu LS. 2008. The frequency and magnitude of earnings management in China. Applied Economics 40: 3213–3225.
+Welford R. 2007. Corporate governance and corporate social responsibility: Issues for Asia. Corporate Social Responsibility and Environmental Man-
+agement 14:4 2–51.
+Welford R, Frost S. 2006. Corporate social responsibility in Asian supply chains. Corporate Social Responsibility and Environmental Management
+13: 166–176.
+Wood DJ. 2010. Corporate social performance measurement: A review. International Journal of Management Reviews 12:5 0–84.
+111SR and Earnings Management in Asia
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+Appendix A. A brief overview of the expectations for each of the categories
+1. Governance, Codes, and Policies
+The indicators in this section assess the availability and communication of company policies and codes of conduct in
+relation to key CSR factors including corporate governance, risk management, anti-corruption, and labor and
+human rights issues.
+2. CSR Strategy and Communication
+The indicators in this section assess company strategy on CSR and how activities are communicated to stakeholders
+through reporting initiatives such as the use of internationally recognized reporting guidelines, stakeholder
+engagement programmes, CSR training and awareness and alignment with voluntary CSR standards in company
+operations.
+3. Marketplace and Supply Chain
+The indicators in this section assess the supply, delivery and distribution of products and services and customer
+focused activities. This includes the areas of health and safety management, supply chain standards and supplier
+engagement.
+4. Workplace and People
+The indicators in this section assess how a company treats its employees and other community stakeholders and
+how their actions are communicated both internally and externally, this includes health policies and human
+resource issues, training and lifelong learning, diversity and freedom of association.
+5. Environment
+The indicators in this section assess the level of environmental data and targets set by the company and how they
+are reported to stakeholders. Indicators include environmental management systems, emissions data, the use of
+renewable energy and customer and employee focused environmental initiatives.
+6. Community and Development
+Community investment initiatives are perhaps the most well-known aspects of CSR in an Asia speci ﬁcc o n t e x t
+with its rich history of philanthropy. However, the emerging model for issues in this section are how community
+initiatives are reported on and if there is evidence of data collection and monitoring of impacts and longer term
+goals. The indicators in this section assess evidence of long term strategies and targets, monitoring systems and
+quantiﬁable impacts of the investment and related employee volunteering.
+Source: http://www.asiansr.com/methodology.php
+112 B. Scholtens and F.-C. Kang
+Copyright © 2012 John Wiley & Sons, Ltd and ERP Environment Corp. Soc. Responsib. Environ. Mgmt. 20,9 5–112 (2013)
+DOI: 10.1002/csr
+ 15353966, 2013, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1002/csr.1286 by The Hong Kong University Of Science And Technology Guangzhou, Wiley Online Library on [10/11/2023]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
