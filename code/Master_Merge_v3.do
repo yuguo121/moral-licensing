@@ -1,44 +1,40 @@
 /* ====================================================================
-   MASTER MERGE v3 — build firm-year panel from raw → processed
-   Project: Corporate ESG Engagement and Earnings Management
-   Run before: Master_Analysis_v3.do
+   MASTER MERGE v3 — 原始 Compustat / 外部表 →  firm-year 分析面板
 
-   Prerequisite ESG: run build_asset4_wide.do first to create
-     $ESG_DATA\asset4_wide.dta (cusip_8 × year) from asset4_raw.
+   下游：Master_Analysis_v3.do 读取 final_analysis_v3.dta。
 
-   --------------------------------------------------------------------
-   DV vs IV (names kept as in source / analysis; 出处见下行)
-   --------------------------------------------------------------------
-   DV — Compustat / Heese construction (本文件 Part 1，非 KLD·MSCI·Refinitiv):
-     rem_heese, ab_prod, ab_disexp_neg,
-     da_dss da_ko da_yu da_ge da_dechow,
-     及 TA 构造用的 dv_ta_*、Jones 回归元 iv_1 iv_22 iv_3（= Modified Jones 自变量，
-     非 ESG 工具变量；勿与 IV 混淆）
-
-   IV — KLD: $ESG_DATA\kld_zy.dta（merge 带入 strengths/concerns 等原列名；
-     本文件内派生 emp_kld env_kld kld_es_total 亦仅来自 KLD 列）
-
-   IV — Refinitiv（Asset4 宽表）: $ESG_DATA\asset4_wide.dta（vs_* 等，列名保持）
-
-   IV — MSCI: $PROJ_DATA\msci_esg.dta（social_pillar_score 等，列名保持）
-
-   其他合并: IO（institutional ownership per_*，$FIN_DATA\io.dta）;
-     CEO 薪酬等（$PROJ_DATA\ceo_compensation.dta）— 非 MSCI/KLD/Refinitiv
+   先决条件：运行 build_asset4_wide.do 生成     $ESG_DATA\asset4_wide.dta（cusip_8 × year）。
 
    --------------------------------------------------------------------
-   Outputs
+   数据流与产出（细节见各 SECTION）
    --------------------------------------------------------------------
-     dv_em_v3.dta          — Part 1：仅 Compustat 侧 EM 度量（DV）
-     playboard_v3.dta      — Part 2：DV + KLD / Refinitiv / MSCI / IO / CEO 等
-     final_analysis_v3.dta — Part 3：+ firm age、duality；可含 Refinitiv 派生 vs_11
+     SECTION 0 — 路径、输入文件检查、小工具程序
+     SECTION 1 — Compustat 单表：筛选、应计/REM（DV），→ dv_em_v3.dta
+     SECTION 2 — 在 DV 上 merge KLD / IO / Refinitiv / MSCI / CEO，
+                 派生 KLD 净分、culpa、industry_type 等，→ playboard_v3.dta
+     SECTION 3 — firm age、duality、growth_asset、big_4、vs_11，
+                 → final_analysis_v3.dta
 
-   Merge keys: cusip_8 + fyear/year；最终面板 gvkey × year
+   合并键：cusip_8 + fyear（或 year）；最终 xtset 为 gvkey × year。
+
+   名称提醒：Part1 中 iv_1 iv_22 iv_3 为 Modified Jones 回归元（文献记号），
+   不是 ESG 工具变量。ESG 来自 KLD / Asset4 / MSCI合并列。
    ==================================================================== */
 
 version 19.0
 clear all
 set more off
 capture log close
+
+/* ====================================================================
+   SECTION 0 — 全局路径、日志、asreg、输入文件检查
+
+   (0.1) 定义 ROOT、RAW_ROOT、FIN_DATA、CEO_DATA、ESG_DATA、PROJ_DATA；cd code；开 log。
+   (0.2) 安装/确认 asreg（SIC-2×year 内 asreg 求 DA/REM 残差）。
+   (0.3) 定义程序 log_sample：在关键步骤后仅打印当前 N。
+   (0.4) 本地宏 comp_file … duality_file 指向各输入；foreach 用 ``_f'' 二次展开路径，
+         缺失则 exit 601。
+   ==================================================================== */
 
 global ROOT         "c:\Users\HuGoL\OneDrive - HKUST (Guangzhou)\PhD\3_Research\Moral Licensing"
 global RAW_ROOT     "D:\Research\Data"
@@ -58,6 +54,7 @@ if _rc {
 
 capture program drop log_sample
 program define log_sample
+    * 在关键筛选/合并后打印当前样本量（仅日志，不改数据）。
     syntax , Step(string)
     quietly count
     display as text "  [SAMPLE] `step': " r(N) " observations"
@@ -67,7 +64,6 @@ local comp_file     "$FIN_DATA\compustat_80_25.dta"
 local io_file       "$FIN_DATA\io.dta"
 local kld_file      "$ESG_DATA\kld_zy.dta"
 local firm_age_file "$RAW_ROOT\firm_age.dta"
-* ESG: Asset4 from pre-built wide panel (see build_asset4_wide.do); MSCI = separate, original names.
 local asset4_wide   "$ESG_DATA\asset4_wide.dta"
 local msci_file     "$PROJ_DATA\msci_esg.dta"
 local ceo_comp_file "$PROJ_DATA\ceo_compensation.dta"
@@ -86,9 +82,21 @@ display as text _newline ">>> Merge v3 started: $S_DATE $S_TIME"
 
 
 /* ====================================================================
-   PART 1: DV — RAW COMPUSTAT → HEESE-ALIGNED EM（应计 / REM）
-   来源: Compustat；非 KLD、非 MSCI、非 Refinitiv。
+   SECTION 1 — Compustat → 应计 DA + Heese REM（仅本表，无 ESG）
+
+   (1.1) 读入 compustat；SIC、金融/链接筛选；核心会计变量非缺失；去重 gvkey×fyear；
+         year 与 fyear 对齐；xtset。
+   (1.2) 杠杆、现金、规模、ROA；账面权益 she /优先股 ps / mb2；市值与微盘过滤。
+   (1.3) 滞后总资产 l_at；要求有上一年 AT（删首年等）。
+   (1.4) 构造应计与 Jones 自变量 iv_1 iv_22 iv_3；五类 scaled TA（dss/ko/yu/ge/dechow）。
+   (1.5) foreach stub：在 SIC-2×year 内 asreg，组内可估样本≥10 时得正常应计，
+         残差为 da_<stub>。
+   (1.6) REM：prod_scaled、disexp_scaled 在 SIC-2×year 内 asreg（组内 n≥10），
+         残差 ab_prod、ab_disexp；ab_disexp_neg = −ab_disexp；
+         rem_heese = ab_prod + ab_disexp_neg。
+   产出：$PROJ_DATA\dv_em_v3.dta
    ==================================================================== */
+
 display as text _newline ">>> Part 1: Heese-aligned EM from raw Compustat..."
 
 use `"`comp_file'"', clear
@@ -121,7 +129,6 @@ else replace year = fyear
 xtset gvkey year
 log_sample, step("After base Compustat filters")
 
-* Debt/cash: treat Compustat missings as zero for book leverage (common); diagnose CHE before imputing.
 quietly count if missing(che)
 display as text "  [INFO] Missing CHE before impute: " r(N) " obs"
 replace dltt = 0 if missing(dltt)
@@ -140,7 +147,6 @@ capture replace she = ceq if missing(she) & !missing(ceq)
 capture replace she = at - lt - mib if missing(she) & !missing(at) & !missing(lt) & !missing(mib)
 capture replace she = at - lt if missing(she) & !missing(at) & !missing(lt)
 
-* Preferred stock: fill by priority without using ps==0 as "unset" (pstkrv can be legitimately 0).
 gen double ps = .
 capture replace ps = pstkrv if !missing(pstkrv)
 capture replace ps = pstkl if missing(ps) & !missing(pstkl)
@@ -148,11 +154,9 @@ capture replace ps = pstk if missing(ps) & !missing(pstk)
 replace ps = 0 if missing(ps)
 
 gen double be = she - ps
-* mb2: market-to-book; be>0 only (negative book equity excluded, common in EM literature).
 gen double mb2 = (prcc_f * csho) / be if !missing(prcc_f) & !missing(csho) & !missing(be) & be > 0
 gen mv  = prcc_f * csho
 
-* MV filter: prcc_f*csho in Compustat is USD millions; drop micro-caps (project rule).
 drop if missing(mv) | mv < 20
 log_sample, step("After market-value filter")
 
@@ -166,7 +170,6 @@ display as text "  [INFO] Dropping obs with no prior-year AT (incl. first firm-y
 drop if missing(l_at)
 log_sample, step("After lagged-assets requirement")
 
-* --- TA & accrual regressors (same logic as Master_Analysis.do; diffs only if year[_n-1]==year-1) ---
 by gvkey: gen double d_act  = act  - act[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_lct  = lct  - lct[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_che  = che  - che[_n-1]  if year[_n-1] == year - 1
@@ -199,7 +202,6 @@ if !_rc {
     label var dechow_ta "IB - (CHE - L.CHE) = IB - d_che"
 }
 
-* Scaled TA (Master_Analysis-style names + legacy dss_ta_scaled for v3 analysis)
 gen double dv_ta_dss = dss_ta / l_at if !missing(dss_ta) & !missing(l_at)
 gen double dss_ta_scaled = dv_ta_dss
 capture confirm variable ko_ta
@@ -214,12 +216,10 @@ if !_rc gen double dv_ta_dechow = dechow_ta / l_at if !missing(dechow_ta) & !mis
 label var dv_ta_dss "dss_ta / lag AT"
 label var dss_ta_scaled "Same as dv_ta_dss (Heese / v3 main DA)"
 
-* Modified-Jones 回归元（Compustat；名称 iv_* 为 Jones 文献记号，不是 ESG IV）
 gen double iv_1 = 1 / l_at
 gen double iv_22 = (d_revt - d_rect) / l_at if !missing(d_revt) & !missing(d_rect) & !missing(l_at)
 gen double iv_3 = ppegt / l_at
 
-* --- Five modified-Jones DAs (same iv_1, iv_22, iv_3; scaled TA differs) ---
 foreach stub in dss ko yu ge dechow {
     if "`stub'" == "dss" local dv dv_ta_dss
     else local dv dv_ta_`stub'
@@ -262,7 +262,6 @@ replace invch = 0 if missing(invch)
 gen double prod_scaled = (cogs + invch) / l_at if !missing(cogs)
 
 replace xrd = 0 if missing(xrd)
-* REM discretionary expenses: SG&A + R&D + advertising (xad); xad often 0 if embedded in xsga or undisclosed.
 capture confirm variable xad
 if _rc gen double xad = 0
 else replace xad = 0 if missing(xad)
@@ -298,15 +297,22 @@ display as text ">>> Part 1 done: dv_em_v3.dta"
 
 
 /* ====================================================================
-   PART 2: 在 Compustat DV 上叠加 ESG / 治理等 IV（及 IO、CEO）
-   KLD → Refinitiv(Asset4) → MSCI 顺序见下；列名尽量保持数据源原名。
+   SECTION 2 — 在 Section1 产出上 merge ESG / IO / CEO 等
+
+   (2.1) use dv_em_v3；year 与 fyear 对齐。
+   (2.2) merge 顺序：KLD（宽 concerns/strengths）→ IO（per_*）→ Asset4（vs_*）→
+         MSCI（三支柱等）→ CEO薪酬表（cusip_8×year；高薪酬优先去重）。
+   (2.3) 派生 emp_kld env_kld kld_es_total；culpa =任一类「罪恶」concern 命中；
+         industry_type = 高污/高责 SIC 规则或 culpa。
+   (2.4) 补充 noa、mkt_share、loss、adj_roa 等控制用变量；isid gvkey year。
+   产出：$PROJ_DATA\playboard_v3.dta
    ==================================================================== */
+
 display as text _newline ">>> Part 2: Merges and controls..."
 
 use "$PROJ_DATA\dv_em_v3.dta", clear
 capture replace year = fyear if missing(year)
 
-* --- IV — KLD（kld_zy.dta）---
 preserve
 use `"`kld_file'"', clear
 capture confirm variable cusip_8
@@ -323,7 +329,6 @@ merge 1:1 cusip_8 fyear using `kld_temp', ///
               cgov_str_* cgov_con_* alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*)
 log_sample, step("After KLD merge")
 
-* --- IO（机构持股，非 KLD/MSCI/Refinitiv）---
 preserve
 use `"`io_file'"', clear
 capture confirm variable cusip_8
@@ -349,15 +354,12 @@ if !_rc {
     }
 }
 
-* --- IV — Refinitiv（Asset4 汇总宽表 asset4_wide.dta）---
 merge 1:1 cusip_8 year using `"`asset4_wide'"', keep(1 3) nogen keepusing(vs_1 vs_4 vs_5 vs_6)
 log_sample, step("After Refinitiv (Asset4) merge")
 
-* --- IV — MSCI（msci_esg.dta；保留原列名）---
 merge 1:1 cusip_8 year using `"`msci_file'"', keep(1 3) nogen keepusing(social_pillar_score environmental_pillar_score weighted_average_score)
 log_sample, step("After MSCI merge")
 
-* --- CEO 薪酬等（项目文件 ceo_compensation.dta；非 KLD/MSCI/Refinitiv）---
 preserve
 use `"`ceo_comp_file'"', clear
 capture confirm variable cusip_8
@@ -382,7 +384,6 @@ restore
 merge 1:1 cusip_8 year using `ceo_temp', keep(1 3) nogen
 log_sample, step("After CEO compensation merge")
 
-* 派生指标（仅 KLD 原列运算；未改 KLD 字段名）
 capture {
     gen emp_kld = emp_str_num1 - emp_con_num1
     gen env_kld = env_str_num1 - env_con_num1
@@ -432,8 +433,15 @@ display as text ">>> Part 2 done: playboard_v3.dta"
 
 
 /* ====================================================================
-   PART 3: 控制变量补充 + 最终 gvkey×year 面板（DV 仍为 Part1；ESG IV 已在 Part2）
+   SECTION 3 — firm age、duality、growth、big_4、vs_11 → 最终分析表
+
+   (3.1) use playboard_v3；merge firm_age（gvkey×year）、duality 补充表。
+   (3.2) big_4 / firm_age 由 au、age 等生成（capture 防缺变量）。
+   (3.3) growth_asset = (at − L.at)/L.at（需连续年）。
+   (3.4) vs_11 = vs_4 + vs_6（仅分析用合成；不覆盖原 Refinitiv 列）。
+   (3.5) isid gvkey year；保存 final_analysis_v3.dta。
    ==================================================================== */
+
 display as text _newline ">>> Part 3: Final panel..."
 
 use "$PROJ_DATA\playboard_v3.dta", clear
@@ -464,7 +472,6 @@ by gvkey: gen double _l_at = at[_n-1] if year[_n-1] == year - 1
 gen double growth_asset = (at - _l_at) / _l_at if !missing(_l_at) & _l_at > 0
 drop _l_at
 
-* 分析用合成：Refinitiv vs_4 + vs_6（不改 vs_4/vs_6 名）；MSCI 支柱仍为独立列
 capture drop vs_11
 capture confirm variable vs_4
 if !_rc {
