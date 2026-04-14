@@ -63,13 +63,12 @@ end
 local comp_file     "$FIN_DATA\compustat_80_25.dta"
 local io_file       "$FIN_DATA\io.dta"
 local kld_file      "$ESG_DATA\kld_zy.dta"
-local firm_age_file "$RAW_ROOT\firm_age.dta"
 local asset4_wide   "$ESG_DATA\asset4_wide.dta"
 local msci_file     "$PROJ_DATA\msci_esg.dta"
 local ceo_comp_file "$PROJ_DATA\ceo_compensation.dta"
 local duality_file  "$PROJ_DATA\duality_sup.dta"
 
-foreach _f in comp_file io_file kld_file firm_age_file asset4_wide msci_file ceo_comp_file duality_file {
+foreach _f in comp_file io_file kld_file asset4_wide msci_file ceo_comp_file duality_file {
     local _path ``_f''
     capture confirm file `"`_path'"'
     if _rc {
@@ -84,7 +83,7 @@ display as text _newline ">>> Merge v3 started: $S_DATE $S_TIME"
 /* ====================================================================
    SECTION 1 — Compustat → 应计 DA + Heese REM（仅本表，无 ESG）
 
-   (1.1) 读入 compustat；SIC、金融/链接筛选；核心会计变量非缺失；去重 gvkey×fyear；
+   (1.1) 读入 compustat；SIC、金融与公用事业（Ni 2020 等常用设定）/链接筛选；核心会计变量非缺失；去重 gvkey×fyear；
          year 与 fyear 对齐；xtset。
    (1.2) 杠杆、现金、规模、ROA；账面权益 she /优先股 ps / mb2；市值与微盘过滤。
    (1.3) 滞后总资产 l_at；要求有上一年 AT（删首年等）。
@@ -108,6 +107,10 @@ if _rc {
 gen sic_num = sic
 
 drop if inrange(sic_num, 6000, 6999)
+* Utilities (e.g. Ni, 2020; SIC 4910–4939)
+//drop if inrange(sic_num, 4910, 4939)
+* Regulated (Zang, 2012)
+//drop if inrange(sic_num, 4400,4999)
 
 capture confirm variable linkprim
 if !_rc {
@@ -127,6 +130,11 @@ capture confirm variable year
 if _rc gen year = fyear
 else replace year = fyear
 xtset gvkey year
+
+bysort gvkey: egen int _first_year = min(fyear)
+gen firm_age = fyear - _first_year
+drop _first_year
+
 log_sample, step("After base Compustat filters")
 
 quietly count if missing(che)
@@ -141,23 +149,27 @@ gen size = ln(at)
 gen roa  = ni / at
 
 gen double she = .
-capture replace she = seq if !missing(seq)
-capture replace she = ceq + pstk if missing(she) & !missing(ceq) & !missing(pstk)
-capture replace she = ceq if missing(she) & !missing(ceq)
-capture replace she = at - lt - mib if missing(she) & !missing(at) & !missing(lt) & !missing(mib)
-capture replace she = at - lt if missing(she) & !missing(at) & !missing(lt)
+replace she = seq if !missing(seq)
+replace she = ceq + pstk if missing(she) & !missing(ceq) & !missing(pstk)
+replace she = ceq if missing(she) & !missing(ceq)
+replace she = at - lt - mib if missing(she) & !missing(at) & !missing(lt) & !missing(mib)
+replace she = at - lt if missing(she) & !missing(at) & !missing(lt)
 
 gen double ps = .
-capture replace ps = pstkrv if !missing(pstkrv)
-capture replace ps = pstkl if missing(ps) & !missing(pstkl)
-capture replace ps = pstk if missing(ps) & !missing(pstk)
+replace ps = pstkrv if !missing(pstkrv)
+replace ps = pstkl if missing(ps) & !missing(pstkl)
+replace ps = pstk if missing(ps) & !missing(pstk)
 replace ps = 0 if missing(ps)
 
-gen double be = she - ps
+gen double txditc_fill = txditc
+replace txditc_fill = 0 if missing(txditc_fill)
+
+gen double be = she + txditc_fill - ps
+drop txditc_fill
 gen double mb2 = (prcc_f * csho) / be if !missing(prcc_f) & !missing(csho) & !missing(be) & be > 0
 gen mv  = prcc_f * csho
 
-drop if missing(mv) | mv < 20
+drop if missing(mv) | mv < 10
 log_sample, step("After market-value filter")
 
 tostring sic_num, gen(sic_str) format(%04.0f)
@@ -179,77 +191,49 @@ by gvkey: gen double d_rect = rect - rect[_n-1] if year[_n-1] == year - 1
 
 gen double dss_ta = d_act - d_lct - d_che + d_dlc if !missing(d_act, d_lct, d_che, d_dlc)
 
-capture confirm variable dp
-if !_rc {
-    gen double ko_ta = dss_ta - dp if !missing(dss_ta) & !missing(dp)
-    label var ko_ta "Jones TA: dss_ta - dp"
-}
+gen double ko_ta = dss_ta - dp if !missing(dss_ta) & !missing(dp)
+label var ko_ta "Jones TA: dss_ta - dp"
 
-capture confirm variable oancf
-if !_rc {
-    gen double yu_ta = ni - oancf if !missing(ni) & !missing(oancf)
-    label var yu_ta "CF accruals: NI - OANCF"
-    capture confirm variable ibc
-    if !_rc {
-        gen double ge_ta = ibc - oancf if !missing(ibc) & !missing(oancf)
-        label var ge_ta "CF accruals: IBC - OANCF (IS-CF match)"
-    }
-}
+gen double yu_ta = ni - oancf if !missing(ni) & !missing(oancf)
+label var yu_ta "CF accruals: NI - OANCF"
 
-capture confirm variable ib
-if !_rc {
-    gen double dechow_ta = ib - d_che if !missing(ib) & !missing(d_che)
-    label var dechow_ta "IB - (CHE - L.CHE) = IB - d_che"
-}
+gen double ge_ta = ibc - oancf if !missing(ibc) & !missing(oancf)
+label var ge_ta "CF accruals: IBC - OANCF (IS-CF match)"
 
-gen double dv_ta_dss = dss_ta / l_at if !missing(dss_ta) & !missing(l_at)
-gen double dss_ta_scaled = dv_ta_dss
-capture confirm variable ko_ta
-if !_rc gen double dv_ta_ko = ko_ta / l_at if !missing(ko_ta) & !missing(l_at)
-capture confirm variable yu_ta
-if !_rc gen double dv_ta_yu = yu_ta / l_at if !missing(yu_ta) & !missing(l_at)
-capture confirm variable ge_ta
-if !_rc gen double dv_ta_ge = ge_ta / l_at if !missing(ge_ta) & !missing(l_at)
-capture confirm variable dechow_ta
-if !_rc gen double dv_ta_dechow = dechow_ta / l_at if !missing(dechow_ta) & !missing(l_at)
+gen double dechow_ta = ib - d_che if !missing(ib) & !missing(d_che)
+label var dechow_ta "IB - (CHE - L.CHE) = IB - d_che"
 
-label var dv_ta_dss "dss_ta / lag AT"
-label var dss_ta_scaled "Same as dv_ta_dss (Heese / v3 main DA)"
+gen double dv_ta_dss    = dss_ta    / l_at if !missing(dss_ta)    & !missing(l_at)
+gen double dv_ta_ko     = ko_ta     / l_at if !missing(ko_ta)     & !missing(l_at)
+gen double dv_ta_yu     = yu_ta     / l_at if !missing(yu_ta)     & !missing(l_at)
+gen double dv_ta_ge     = ge_ta     / l_at if !missing(ge_ta)     & !missing(l_at)
+gen double dv_ta_dechow = dechow_ta / l_at if !missing(dechow_ta) & !missing(l_at)
+
+label var dv_ta_dss    "dss_ta / lag AT"
+label var dv_ta_ko     "ko_ta / lag AT"
+label var dv_ta_yu     "yu_ta / lag AT"
+label var dv_ta_ge     "ge_ta / lag AT"
+label var dv_ta_dechow "dechow_ta / lag AT"
 
 gen double iv_1 = 1 / l_at
 gen double iv_22 = (d_revt - d_rect) / l_at if !missing(d_revt) & !missing(d_rect) & !missing(l_at)
 gen double iv_3 = ppegt / l_at
 
 foreach stub in dss ko yu ge dechow {
-    if "`stub'" == "dss" local dv dv_ta_dss
-    else local dv dv_ta_`stub'
-    capture confirm variable `dv'
-    if _rc continue
-    gen byte _ok = !missing(`dv', iv_1, iv_22, iv_3)
-    bysort sic_2 year: egen _dacnt = total(_ok)
+    local dv dv_ta_`stub'
     display as text "  DA (`stub'): modified Jones on `dv' (SIC-2 × year)..."
-    bys year sic_2: asreg `dv' iv_1 iv_22 iv_3 if _dacnt >= 10
-    gen double _nda = _b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons if _dacnt >= 10
-    gen double da_`stub' = `dv' - _nda if _dacnt >= 10 & !missing(`dv', iv_1, iv_22, iv_3)
-    drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons _nda _ok _dacnt
+    bys year sic_2: asreg `dv' iv_1 iv_22 iv_3
+    gen double da_`stub' = `dv' - (_b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons)
+    drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons
 }
 
 sort gvkey year
 
-capture confirm variable da_dss
-if !_rc {
-    label var da_dss "Modified-Jones DA; TA=dv_ta_dss (BS, no dep)"
-    gen double dss_da_heese = da_dss
-    label var dss_da_heese "Alias of da_dss (backward compat)"
-}
-capture confirm variable da_ko
-if !_rc label var da_ko "Modified-Jones DA; TA=dv_ta_ko (Jones + dep)"
-capture confirm variable da_yu
-if !_rc label var da_yu "Modified-Jones DA; TA=dv_ta_yu (NI-OANCF)"
-capture confirm variable da_ge
-if !_rc label var da_ge "Modified-Jones DA; TA=dv_ta_ge (IBC-OANCF)"
-capture confirm variable da_dechow
-if !_rc label var da_dechow "Modified-Jones DA; TA=dv_ta_dechow (IB-dCHE)"
+label var da_dss    "Modified-Jones DA; TA=dv_ta_dss (BS, no dep)"
+label var da_ko     "Modified-Jones DA; TA=dv_ta_ko (Jones + dep)"
+label var da_yu     "Modified-Jones DA; TA=dv_ta_yu (NI-OANCF)"
+label var da_ge     "Modified-Jones DA; TA=dv_ta_ge (IBC-OANCF)"
+label var da_dechow "Modified-Jones DA; TA=dv_ta_dechow (IB-dCHE)"
 
 drop d_act d_lct d_che d_dlc d_revt d_rect
 
@@ -297,126 +281,103 @@ display as text ">>> Part 1 done: dv_em_v3.dta"
 
 
 /* ====================================================================
-   SECTION 2 — 在 Section1 产出上 merge ESG / IO / CEO 等
+   SECTION 2 — Merge 外部表、派生变量 → final_analysis_v3.dta
 
-   (2.1) use dv_em_v3；year 与 fyear 对齐。
-   (2.2) merge 顺序：KLD（宽 concerns/strengths）→ IO（per_*）→ Asset4（vs_*）→
-         MSCI（三支柱等）→ CEO薪酬表（cusip_8×year；高薪酬优先去重）。
-   (2.3) 派生 emp_kld env_kld kld_es_total；culpa =任一类「罪恶」concern 命中；
-         industry_type = 高污/高责 SIC 规则或 culpa。
-   (2.4) 补充 noa、mkt_share、loss、adj_roa 等控制用变量；isid gvkey year。
-   产出：$PROJ_DATA\playboard_v3.dta
+   Step 1  KLD        (cusip_8 × fyear)  → KLD strengths / concerns
+   Step 2  IO         (cusip_8 × fyear)  → per_* 机构持股
+   Step 3  Refinitiv  (cusip_8 × year)   → vs_1 vs_4 vs_5 vs_6
+   Step 4  MSCI       (cusip_8 × year)   → pillar scores
+   Step 5  CEO comp   (cusip_8 × year)   → CEO 薪酬与特征
+   Step 6  Duality    (gvkey   × year)   → duality
+
+   派生：culpa、industry_type、emp_kld/env_kld/kld_es_total、
+         loss、adj_roa、big_4、growth_asset、vs_11。
    ==================================================================== */
 
-display as text _newline ">>> Part 2: Merges and controls..."
+display as text _newline ">>> Part 2: Merges, derived variables, final panel..."
 
 use "$PROJ_DATA\dv_em_v3.dta", clear
-capture replace year = fyear if missing(year)
+replace year = fyear if missing(year)
 
+* --- Step 1: KLD (cusip_8 × fyear) → strengths / concerns -----------------
 preserve
 use `"`kld_file'"', clear
-capture confirm variable cusip_8
-if _rc gen cusip_8 = substr(cusip, 1, 8)
+gen cusip_8 = substr(cusip, 1, 8)
 duplicates drop cusip_8 fyear, force
 tempfile kld_temp
 save `kld_temp'
 restore
 
 merge 1:1 cusip_8 fyear using `kld_temp', ///
-    nogen keep(1 3 4 5) update ///
+    nogen keep(1 3) ///
     keepusing(env_str_* env_con_* com_str_* com_con_* hum_str_* hum_con_* ///
               emp_str_* emp_con_* div_str_* div_con_* pro_str_* pro_con_* ///
               cgov_str_* cgov_con_* alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*)
-log_sample, step("After KLD merge")
+log_sample, step("Step 1: KLD merge")
 
+* --- Step 2: IO (cusip_8 × fyear) → per_* ---------------------------------
 preserve
 use `"`io_file'"', clear
-capture confirm variable cusip_8
-if _rc gen cusip_8 = substr(cusip, 1, 8)
-capture confirm variable fyear
-if _rc {
-    capture confirm variable year
-    if !_rc rename year fyear
-}
+gen cusip_8 = substr(cusip, 1, 8)
+rename year fyear
 duplicates drop cusip_8 fyear, force
 tempfile io_temp
 save `io_temp'
 restore
 
 merge 1:1 cusip_8 fyear using `io_temp', keep(1 3) nogen keepusing(per_*)
-log_sample, step("After IO merge")
+log_sample, step("Step 2: IO merge")
 
-gen byte culpa = 0
-capture unab sinvars : alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*
-if !_rc {
-    foreach v of local sinvars {
-        replace culpa = 1 if `v' == 1
-    }
-}
+* --- Step 3: Refinitiv Asset4 (cusip_8 × year) → vs_1 vs_4 vs_5 vs_6 -----
+merge 1:1 cusip_8 year using `"`asset4_wide'"', keep(1 3) nogen ///
+    keepusing(vs_1 vs_4 vs_5 vs_6)
+log_sample, step("Step 3: Refinitiv merge")
 
-merge 1:1 cusip_8 year using `"`asset4_wide'"', keep(1 3) nogen keepusing(vs_1 vs_4 vs_5 vs_6)
-log_sample, step("After Refinitiv (Asset4) merge")
+* --- Step 4: MSCI (cusip_8 × year) → pillar scores ------------------------
+merge 1:1 cusip_8 year using `"`msci_file'"', keep(1 3) nogen ///
+    keepusing(social_pillar_score environmental_pillar_score weighted_average_score)
+log_sample, step("Step 4: MSCI merge")
 
-merge 1:1 cusip_8 year using `"`msci_file'"', keep(1 3) nogen keepusing(social_pillar_score environmental_pillar_score weighted_average_score)
-log_sample, step("After MSCI merge")
-
+* --- Step 5: CEO compensation (cusip_8 × year) → CEO characteristics ------
 preserve
 use `"`ceo_comp_file'"', clear
-capture confirm variable cusip_8
-if _rc gen cusip_8 = substr(cusip, 1, 8)
-capture confirm variable year
-if _rc {
-    capture confirm variable fyear
-    if !_rc gen year = fyear
-}
-capture confirm variable total_curr_comp
-if !_rc gsort cusip_8 year -total_curr_comp
-else {
-    capture confirm variable ceo_name
-    if !_rc sort cusip_8 year ceo_name
-    else sort cusip_8 year
-}
+gen cusip_8 = substr(cusip, 1, 8)
+gen year = fyear
+gsort cusip_8 year -total_curr_comp
 duplicates drop cusip_8 year, force
 tempfile ceo_temp
 save `ceo_temp'
 restore
 
 merge 1:1 cusip_8 year using `ceo_temp', keep(1 3) nogen
-log_sample, step("After CEO compensation merge")
+log_sample, step("Step 5: CEO compensation merge")
 
-capture {
-    gen emp_kld = emp_str_num1 - emp_con_num1
-    gen env_kld = env_str_num1 - env_con_num1
-    gen kld_es_total = env_kld + emp_kld
+* --- Step 6: Duality (gvkey × year) → duality -----------------------------
+preserve
+use `"`duality_file'"', clear
+duplicates drop gvkey year, force
+tempfile dual_temp
+save `dual_temp'
+restore
+
+merge 1:1 gvkey year using `dual_temp', keep(1 3) keepusing(duality) update nogen
+log_sample, step("Step 6: Duality merge")
+
+* --- Derived variables -----------------------------------------------------
+
+gen emp_kld = emp_str_num1 - emp_con_num1
+gen env_kld = env_str_num1 - env_con_num1
+gen kld_es_total = env_kld + emp_kld
+
+replace ceo_gender = "1" if ceo_gender == "MALE"
+replace ceo_gender = "0" if ceo_gender == "FEMALE"
+destring ceo_gender, replace
+
+gen byte culpa = 0
+unab sinvars : alc_con_* gam_con_* mil_con_* nuc_con_* tob_con_*
+foreach v of local sinvars {
+    replace culpa = 1 if `v' == 1
 }
-capture label var emp_kld "KLD-derived: emp_str_num1 - emp_con_num1"
-capture label var env_kld "KLD-derived: env_str_num1 - env_con_num1"
-capture label var kld_es_total "KLD-derived: env_kld + emp_kld"
-
-capture {
-    replace ceo_gender = "1" if ceo_gender == "MALE"
-    replace ceo_gender = "0" if ceo_gender == "FEMALE"
-    destring ceo_gender, replace
-}
-
-sort gvkey year
-by gvkey: gen double _l_she  = she[_n-1]  if year[_n-1] == year - 1
-by gvkey: gen double _l_che  = che[_n-1]  if year[_n-1] == year - 1
-by gvkey: gen double _l_dltt = dltt[_n-1] if year[_n-1] == year - 1
-by gvkey: gen double _l_dlc  = dlc[_n-1]  if year[_n-1] == year - 1
-by gvkey: gen double _l_sale = sale[_n-1] if year[_n-1] == year - 1
-gen double noa = (_l_she - _l_che + _l_dltt + _l_dlc) / _l_sale ///
-    if !missing(_l_she) & !missing(_l_sale) & _l_sale > 0
-drop _l_she _l_che _l_dltt _l_dlc _l_sale
-
-by gvkey: gen double _l_sale2 = sale[_n-1] if year[_n-1] == year - 1
-bysort sic_2 year: egen double _sic2_total_l_sale = total(_l_sale2)
-gen double mkt_share = _l_sale2 / _sic2_total_l_sale if _sic2_total_l_sale > 0
-drop _l_sale2 _sic2_total_l_sale
-
-gen byte loss = (ni < 0) if !missing(ni)
-bysort sic_2 year: egen double aver_roa = mean(roa)
-gen double adj_roa = roa - aver_roa
 
 gen byte industry_type = 0
 replace industry_type = 1 if inrange(sic_num, 2100, 2199)
@@ -425,66 +386,25 @@ replace industry_type = 1 if inrange(sic_num, 800, 899) | inrange(sic_num, 1000,
 replace industry_type = 1 if sic_num == 2080 | inrange(sic_num, 2082, 2085)
 replace industry_type = 1 if culpa == 1
 
-isid gvkey year
+gen byte loss = (ni < 0) if !missing(ni)
+bysort sic_2 year: egen double aver_roa = mean(roa)
+gen double adj_roa = roa - aver_roa
 
-compress
-save "$PROJ_DATA\playboard_v3.dta", replace
-display as text ">>> Part 2 done: playboard_v3.dta"
-
-
-/* ====================================================================
-   SECTION 3 — firm age、duality、growth、big_4、vs_11 → 最终分析表
-
-   (3.1) use playboard_v3；merge firm_age（gvkey×year）、duality 补充表。
-   (3.2) big_4 / firm_age 由 au、age 等生成（capture 防缺变量）。
-   (3.3) growth_asset = (at − L.at)/L.at（需连续年）。
-   (3.4) vs_11 = vs_4 + vs_6（仅分析用合成；不覆盖原 Refinitiv 列）。
-   (3.5) isid gvkey year；保存 final_analysis_v3.dta。
-   ==================================================================== */
-
-display as text _newline ">>> Part 3: Final panel..."
-
-use "$PROJ_DATA\playboard_v3.dta", clear
-xtset gvkey year
-
-preserve
-use `"`firm_age_file'"', clear
-duplicates drop gvkey year, force
-tempfile age_temp
-save `age_temp'
-restore
-merge 1:1 gvkey year using `age_temp', keep(1 3 4 5) keepusing(age) nogen
-
-preserve
-use `"`duality_file'"', clear
-duplicates drop gvkey year, force
-tempfile dual_temp
-save `dual_temp'
-restore
-merge 1:1 gvkey year using `dual_temp', keep(1 3) keepusing(duality) update nogen
-
-capture gen big_n = (au > 0 & au < 9) if !missing(au)
-capture gen big_4 = (au > 3 & au < 9) if !missing(au)
-capture gen firm_age = age
+gen big_4 = inlist(au, 4, 5, 6, 7) if !missing(au)
 
 sort gvkey year
 by gvkey: gen double _l_at = at[_n-1] if year[_n-1] == year - 1
 gen double growth_asset = (at - _l_at) / _l_at if !missing(_l_at) & _l_at > 0
 drop _l_at
 
-capture drop vs_11
-capture confirm variable vs_4
-if !_rc {
-    capture confirm variable vs_6
-    if !_rc gen double vs_11 = vs_4 + vs_6 if !missing(vs_4) & !missing(vs_6)
-}
-capture label var vs_11 "Refinitiv-derived: vs_4 + vs_6"
+gen double vs_11 = vs_4 + vs_6 if !missing(vs_4) & !missing(vs_6)
+label var vs_11 "Refinitiv-derived: vs_4 + vs_6"
 
 sort gvkey year
 isid gvkey year
 
 compress
 save "$PROJ_DATA\final_analysis_v3.dta", replace
-display as text ">>> Part 3 done: final_analysis_v3.dta (firm-year panel)"
+display as text ">>> Part 2 done: final_analysis_v3.dta (firm-year panel)"
 display as text ">>> Merge v3 finished: $S_DATE $S_TIME"
 log close
