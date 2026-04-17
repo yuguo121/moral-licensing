@@ -46,12 +46,6 @@ global PROJ_DATA    "$ROOT\data\processed"
 cd "$ROOT\code"
 log using "$ROOT\code\merge_v3_log.log", replace
 
-capture which asreg
-if _rc {
-    display as error "Package asreg not found. Installing..."
-    ssc install asreg
-}
-
 capture program drop log_sample
 program define log_sample
     * 在关键筛选/合并后打印当前样本量（仅日志，不改数据）。
@@ -290,7 +284,7 @@ display as text ">>> Part 1 done: dv_em_v3.dta"
    Step 4  MSCI       (cusip_8 × year)   → pillar scores
    Step 5  Duality    (gvkey   × year)   → duality
    Step 6  ExecuComp  (gvkey   × year)  → CEO/CFO controls, interim flags
-   Step 7  IBES       (cusip_8 × year)  → numest (analyst coverage)
+   Step 7  IBES       (cusip_8 × year)  → numest, numup, numdown (analyst coverage / revisions)
 
    派生：culpa、industry_type、emp_kld/env_kld/kld_es_total、
          loss、adj_roa、big_4、growth_asset、env_soc_score。
@@ -399,12 +393,7 @@ gen double ceo_option_fv    = option_awards_fv
 gen double ceo_stock_fv     = stock_awards_fv
 gen double ceo_option_ratio = option_awards_fv / tdc1 if !missing(option_awards_fv) & tdc1 > 0
 gen double ceo_ownership    = shrown_excl_opts
-gen double ceo_wealth       = ///
-    cond(missing(opt_unex_exer_est_val),  0, opt_unex_exer_est_val) + ///
-    cond(missing(opt_unex_unexer_est_val),0, opt_unex_unexer_est_val) + ///
-    cond(missing(stock_unvest_val),       0, stock_unvest_val)
-replace ceo_wealth = . if missing(opt_unex_exer_est_val) & ///
-    missing(opt_unex_unexer_est_val) & missing(stock_unvest_val)
+
 gen double ceo_tdc1 = tdc1
 
 gsort gvkey year -ceo_tdc1
@@ -438,7 +427,7 @@ merge 1:1 gvkey year using `ceo_temp', keep(1 3) nogen
 merge 1:1 gvkey year using `cfo_temp', keep(1 3) nogen
 log_sample, step("Step 6: ExecuComp CEO/CFO merge")
 
-* --- Step 7: IBES Analyst Coverage (cusip_8 × year) → numest ----------------
+* --- Step 7: IBES Summary (cusip_8 × year) → numest, numup, numdown ---------
 preserve
 use `"`ibes_file'"', clear
 
@@ -459,12 +448,12 @@ rename cusip cusip_8
 gsort cusip_8 year -numest
 duplicates drop cusip_8 year, force
 
-keep cusip_8 year numest
+keep cusip_8 year numest numup numdown
 tempfile ibes_temp
 save `ibes_temp'
 restore
 
-merge 1:1 cusip_8 year using `ibes_temp', keep(1 3) nogen keepusing(numest)
+merge 1:1 cusip_8 year using `ibes_temp', keep(1 3) nogen keepusing(numest numup numdown)
 log_sample, step("Step 7: IBES analyst coverage merge")
 
 * --- Derived variables -----------------------------------------------------
