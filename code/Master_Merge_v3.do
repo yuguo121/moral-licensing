@@ -439,6 +439,9 @@ log_sample, step("Step 5: Duality merge")
 * 6a — CEO-level variables
 preserve
 use `"`execucomp_file'"', clear
+* 与主表 Compustat 一致为数值型 gvkey，避免 string/long 合并不匹配
+capture confirm string variable gvkey
+if !_rc destring gvkey, replace force
 keep if ceoann == "CEO"
 
 gen byte interim_ceo = regexm(lower(titleann), "(interim|acting).*(chief executive|\bceo\b|principal executive)")
@@ -462,11 +465,16 @@ duplicates drop gvkey year, force
 keep gvkey year interim_ceo ceo_tenure ceo_age ceo_female ///
     ceo_cash_comp ceo_option_fv ceo_stock_fv ceo_option_ratio ///
     ceo_ownership ceo_tdc1
+quietly count
+local n_ceo_fy = r(N)
+display as text "  [DIAG] ExecuComp → ceo_temp (dedup gvkey×year): " `n_ceo_fy' " rows"
 tempfile ceo_temp
 save `ceo_temp'
 
 * 6b — CFO interim flag
 use `"`execucomp_file'"', clear
+capture confirm string variable gvkey
+if !_rc destring gvkey, replace force
 keep if inlist(cfoann, "CFO", "CfO")
 
 gen byte interim_cfo = regexm(lower(titleann), "(interim|acting).*(chief financial|\bcfo\b|principal financial)")
@@ -479,11 +487,18 @@ gsort gvkey year -tdc1
 duplicates drop gvkey year, force
 
 keep gvkey year interim_cfo cfo_tenure cfo_age cfo_female
+quietly count
+local n_cfo_fy = r(N)
+display as text "  [DIAG] ExecuComp → cfo_temp (dedup gvkey×year): " `n_cfo_fy' " rows"
 tempfile cfo_temp
 save `cfo_temp'
 restore
 
-merge 1:1 gvkey year using `ceo_temp', keep(1 3) nogen
+merge 1:1 gvkey year using `ceo_temp', keep(1 3) gen(_merge_ceo)
+quietly count if _merge_ceo == 3
+local n_mceo = r(N)
+display as text "  [DIAG] merge CEO: matched firm-years = " `n_mceo'
+drop _merge_ceo
 merge 1:1 gvkey year using `cfo_temp', keep(1 3) nogen
 log_sample, step("Step 6: ExecuComp CEO/CFO merge")
 

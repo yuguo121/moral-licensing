@@ -221,32 +221,77 @@ winsor2 `wvars', cuts(0.5 99.5) replace
 /* ====================================================================
    SECTION 5 — IV 工具：同 SIC-2×year 留一法（LOO）同伴均值
 
-     对每个存在于数据中的 ESG（ivlist）生成常存变量 ivloo_<ivtags>，
-     公式：组内 sum(ESG) 与 count，(sum − 自身) / (n−1)，仅当 n>1 且 ESG 非缺失。
-     须在 winsorize（SECTION 4）之后执行，与原先 IV 循环内构造的 Z 一致。
+     Refinitiv：fid1 / fid4 / fid6 / env_soc → ivloo_ref1 ref4 ref6 ref46。
+     MSCI：environmental_pillar_score、social_pillar_score → ivloo_msci_env / ivloo_msci_soc。
+     公式：组内 sum 与 count，(sum − 自身) / (n−1)，仅当 n>1 且该 ESG 非缺失。
+     对上述 ivloo_*，按 gvkey 滞后一期逐条生成 L1_ivloo_*（xtset gvkey year）。
+     须在 winsorize（SECTION 4）之后执行；本节逐变量 gen，无 capture confirm。
    ==================================================================== */
 
 display as text _newline ">>> LOO instruments (SIC-2 × year, pre-regression)"
 
-forvalues j = 1/`niv' {
-    local iv  : word `j' of `ivlist'
-    local tag : word `j' of `tags'
-    capture confirm variable `iv'
-    if _rc continue
+* --- Refinitiv：同期 LOO（SIC-2 × year）---
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(fid1_vscore)
+quietly bysort sic_2 year: egen long `cn' = count(fid1_vscore)
+gen double ivloo_ref1 = (`sm' - fid1_vscore) / (`cn' - 1) if `cn' > 1 & !missing(fid1_vscore)
+drop `sm' `cn'
+label var ivloo_ref1 "LOO peer mean, fid1_vscore (SIC-2×year)"
 
-    capture confirm variable ivloo_`tag'
-    if !_rc drop ivloo_`tag'
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(fid4_vscore)
+quietly bysort sic_2 year: egen long `cn' = count(fid4_vscore)
+gen double ivloo_ref4 = (`sm' - fid4_vscore) / (`cn' - 1) if `cn' > 1 & !missing(fid4_vscore)
+drop `sm' `cn'
+label var ivloo_ref4 "LOO peer mean, fid4_vscore (SIC-2×year)"
 
-    tempvar _sm _cn
-    quietly bysort sic_2 year: egen double `_sm' = total(`iv')
-    quietly bysort sic_2 year: egen long   `_cn' = count(`iv')
-    quietly gen double ivloo_`tag' = (`_sm' - `iv') / (`_cn' - 1) ///
-        if `_cn' > 1 & !missing(`iv')
-    drop `_sm' `_cn'
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(fid6_vscore)
+quietly bysort sic_2 year: egen long `cn' = count(fid6_vscore)
+gen double ivloo_ref6 = (`sm' - fid6_vscore) / (`cn' - 1) if `cn' > 1 & !missing(fid6_vscore)
+drop `sm' `cn'
+label var ivloo_ref6 "LOO peer mean, fid6_vscore (SIC-2×year)"
 
-    capture label var ivloo_`tag' "LOO peer mean, `iv' (SIC-2×year)"
-    display as text "  [LOO] ivloo_`tag'  ←  `iv'"
-}
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(env_soc_score)
+quietly bysort sic_2 year: egen long `cn' = count(env_soc_score)
+gen double ivloo_ref46 = (`sm' - env_soc_score) / (`cn' - 1) if `cn' > 1 & !missing(env_soc_score)
+drop `sm' `cn'
+label var ivloo_ref46 "LOO peer mean, env_soc_score (SIC-2×year)"
+
+* --- MSCI：同期 LOO（SIC-2 × year）---
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(environmental_pillar_score)
+quietly bysort sic_2 year: egen long `cn' = count(environmental_pillar_score)
+gen double ivloo_msci_env = (`sm' - environmental_pillar_score) / (`cn' - 1) ///
+    if `cn' > 1 & !missing(environmental_pillar_score)
+drop `sm' `cn'
+label var ivloo_msci_env "LOO peer mean, environmental_pillar_score (SIC-2×year)"
+
+tempvar sm cn
+quietly bysort sic_2 year: egen double `sm' = total(social_pillar_score)
+quietly bysort sic_2 year: egen long `cn' = count(social_pillar_score)
+gen double ivloo_msci_soc = (`sm' - social_pillar_score) / (`cn' - 1) ///
+    if `cn' > 1 & !missing(social_pillar_score)
+drop `sm' `cn'
+label var ivloo_msci_soc "LOO peer mean, social_pillar_score (SIC-2×year)"
+
+* --- 滞后一年（firm-year）：L1_ivloo_* = L.ivloo_* ---
+* L. 在 xtset gvkey year 下按「同一 gvkey、时间上一期」取值；此前 bysort sic_2 year 已改变内存排序，此处先恢复 gvkey–year 顺序。
+display as text _newline ">>> LOO L1 (within gvkey, one-year lag)"
+sort gvkey year
+gen double L1_ivloo_ref1   = L.ivloo_ref1
+gen double L1_ivloo_ref4   = L.ivloo_ref4
+gen double L1_ivloo_ref6   = L.ivloo_ref6
+gen double L1_ivloo_ref46  = L.ivloo_ref46
+gen double L1_ivloo_msci_env = L.ivloo_msci_env
+gen double L1_ivloo_msci_soc = L.ivloo_msci_soc
+label var L1_ivloo_ref1   "L1 of ivloo_ref1 (firm-year)"
+label var L1_ivloo_ref4   "L1 of ivloo_ref4 (firm-year)"
+label var L1_ivloo_ref6   "L1 of ivloo_ref6 (firm-year)"
+label var L1_ivloo_ref46  "L1 of ivloo_ref46 (firm-year)"
+label var L1_ivloo_msci_env "L1 of ivloo_msci_env (firm-year)"
+label var L1_ivloo_msci_soc "L1 of ivloo_msci_soc (firm-year)"
 
 * OLS 单条示例（无宏；因变量/ESG 可换；控制变量 = SECTION 4 中 global ctrl 的核心 6 个）：
 * reghdfe da_heese fid1_vscore i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
