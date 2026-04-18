@@ -461,7 +461,7 @@ duplicates drop gvkey year, force
 
 keep gvkey year interim_ceo ceo_tenure ceo_age ceo_female ///
     ceo_cash_comp ceo_option_fv ceo_stock_fv ceo_option_ratio ///
-    ceo_ownership ceo_wealth ceo_tdc1
+    ceo_ownership ceo_tdc1
 tempfile ceo_temp
 save `ceo_temp'
 
