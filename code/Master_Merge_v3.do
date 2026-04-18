@@ -15,7 +15,7 @@
      SECTION 3 — firm age、duality、growth_asset、big_4、vs_11，
                  → final_analysis_v3.dta
 
-   合并键：cusip_8 + fyear（或 year）；最终 xtset 为 gvkey × year。
+   合并键：cusip_8 + fyear（或 year）；panel_zy 为 cusip + fyear；最终 xtset 为 gvkey × year。
 
    名称提醒：Part1 中 iv_1 iv_22 iv_3 为 Modified Jones 回归元（文献记号），
    不是 ESG 工具变量。ESG 来自 KLD / Asset4 / MSCI合并列。
@@ -62,8 +62,9 @@ local msci_file     "$PROJ_DATA\msci_esg.dta"
 local duality_file  "$PROJ_DATA\duality_sup.dta"
 local execucomp_file "$CEO_DATA\execucomp_10_25.dta"
 local ibes_file     "$FIN_DATA\ibes_sum_raw.dta"
+local panel_zy_file "$FIN_DATA\panel_zy.dta"
 
-foreach _f in comp_file io_file kld_file refinitiv_file msci_file duality_file execucomp_file ibes_file {
+foreach _f in comp_file io_file kld_file refinitiv_file msci_file duality_file execucomp_file ibes_file panel_zy_file {
     local _path ``_f''
     capture confirm file `"`_path'"'
     if _rc {
@@ -232,11 +233,13 @@ label var iv_4 "L.ROA (ROA_{t−1}) for da_ko asreg"
 foreach stub in heese dss ali yu ge {
     local dv dv_ta_`stub'
     display as text "  DA (`stub'): modified Jones on `dv' (SIC-2 × year)..."
+    // asreg 默认含截距（同 regress；勿加 nocons）；残差用 _b_cons
     bys year sic_2: asreg `dv' iv_1 iv_22 iv_3
     gen double da_`stub' = `dv' - (_b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_cons)
     drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons
 }
 
+* da_ko：asreg 默认含截距；残差式含 _b_cons
 display as text "  DA (ko): asreg on dv_ta_dss with iv_1–iv_4 (SIC-2 × year)..."
 bys year sic_2: asreg dv_ta_dss iv_1 iv_22 iv_3 iv_4
 gen double da_ko = dv_ta_dss - ///
@@ -302,6 +305,7 @@ display as text ">>> Part 1 done: dv_em_v3.dta"
 
    Step 1  KLD        (cusip_8 × fyear)  → KLD strengths / concerns
    Step 2  IO         (cusip_8 × fyear)  → per_* 机构持股
+   Step 2b panel_zy   (cusip × fyear)   → bod_*、com_*（temp 内先 drop com_str/com_con 再 unab）
    Step 3  Refinitiv V2 (cusip_8 × year) → fid{1-16,200,206,239,269,422}_{value,vscore}
    Step 4  MSCI       (cusip_8 × year)   → issuer/IVA、支柱与主题分等（见 keepusing）
    Step 5  Duality    (gvkey   × year)   → duality
@@ -343,6 +347,24 @@ restore
 
 merge 1:1 cusip_8 fyear using `io_temp', keep(1 3) nogen keepusing(per_*)
 log_sample, step("Step 2: IO merge")
+
+* --- Step 2b: panel_zy (cusip × fyear) → bod_* com_* ------------------------
+preserve
+use `"`panel_zy_file'"', clear
+capture drop com_str_* com_con_*
+unab _bod : bod_*
+unab _com : com_*
+local pzy_keep `_bod' `_com'
+local pzy_keep : list retokenize pzy_keep
+local pzy_keep : list uniq pzy_keep
+keep cusip fyear `pzy_keep'
+duplicates drop cusip fyear, force
+tempfile panel_zy_temp
+save `panel_zy_temp'
+restore
+
+merge 1:1 cusip fyear using `panel_zy_temp', keep(1 3) nogen keepusing(`pzy_keep')
+log_sample, step("Step 2b: panel_zy bod_/com_ merge")
 
 * --- Step 3: Refinitiv V2 ESG (cusip_8 × year) → fid*_value / fid*_vscore ---
 preserve
