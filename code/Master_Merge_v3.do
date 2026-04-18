@@ -82,9 +82,11 @@ display as text _newline ">>> Merge v3 started: $S_DATE $S_TIME"
          year 与 fyear 对齐；xtset。
    (1.2) 杠杆、现金、规模、ROA；账面权益 she /优先股 ps / mb2；市值与微盘过滤。
    (1.3) 滞后总资产 l_at；要求有上一年 AT（删首年等）。
-   (1.4) 构造应计与 Jones 自变量 iv_1 iv_22 iv_3；五类 scaled TA（dss/ko/yu/ge/dechow）。
-   (1.5) foreach stub：在 SIC-2×year 内 asreg，组内可估样本≥10 时得正常应计，
-         残差为 da_<stub>。
+   (1.4) 构造 Jones 自变量 iv_1–iv_3 与 iv_4（ROA_{t−1}）；TA：heese_ta（原 WC dss）、
+         dss_ta（原 ko=heese−dp）、ali/yu/ge；scaled 为 dv_ta_*。
+   (1.5) da_heese/da_dss/da_ali/da_yu/da_ge：SIC-2×year 内 asreg 于 iv_1 iv_22 iv_3（Modified Jones），
+         因变量为 dv_ta_heese、dv_ta_dss、dv_ta_ali、dv_ta_yu、dv_ta_ge。
+         da_ko：同组内 asreg dv_ta_dss 于 iv_1 iv_22 iv_3 iv_4 与常数项（与 da_dss 同 TA、多 L.ROA）。
    (1.6) REM：prod_scaled、disexp_scaled 在 SIC-2×year 内 asreg（组内 n≥10），
          残差 ab_prod、ab_disexp；ab_disexp_neg = −ab_disexp；
          rem_heese = ab_prod + ab_disexp_neg。
@@ -177,17 +179,29 @@ display as text "  [INFO] Dropping obs with no prior-year AT (incl. first firm-y
 drop if missing(l_at)
 log_sample, step("After lagged-assets requirement")
 
+capture confirm variable txp
+if _rc {
+    display as error "Compustat file must include txp (TXP) for d_txp / ali_ta."
+    exit 601
+}
+
 by gvkey: gen double d_act  = act  - act[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_lct  = lct  - lct[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_che  = che  - che[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_dlc  = dlc  - dlc[_n-1]  if year[_n-1] == year - 1
 by gvkey: gen double d_revt = revt - revt[_n-1] if year[_n-1] == year - 1
 by gvkey: gen double d_rect = rect - rect[_n-1] if year[_n-1] == year - 1
+by gvkey: gen double d_txp  = txp  - txp[_n-1]  if year[_n-1] == year - 1
+label var d_txp "Δ Income taxes payable (txp)"
 
-gen double dss_ta = d_act - d_lct - d_che + d_dlc if !missing(d_act, d_lct, d_che, d_dlc)
+gen double heese_ta = d_act - d_lct - d_che + d_dlc if !missing(d_act, d_lct, d_che, d_dlc)
+label var heese_ta "WC accrual (prior dss_ta / Heese base)"
 
-gen double ko_ta = dss_ta - dp if !missing(dss_ta) & !missing(dp)
-label var ko_ta "Jones TA: dss_ta - dp"
+gen double dss_ta = heese_ta - dp if !missing(heese_ta) & !missing(dp)
+label var dss_ta "WC accrual − dp (prior ko_ta)"
+
+gen double ali_ta = heese_ta + d_txp - dp if !missing(heese_ta, d_txp, dp)
+label var ali_ta "heese_ta + d_txp − dp"
 
 gen double yu_ta = ni - oancf if !missing(ni) & !missing(oancf)
 label var yu_ta "CF accruals: NI - OANCF"
@@ -195,26 +209,27 @@ label var yu_ta "CF accruals: NI - OANCF"
 gen double ge_ta = ibc - oancf if !missing(ibc) & !missing(oancf)
 label var ge_ta "CF accruals: IBC - OANCF (IS-CF match)"
 
-gen double dechow_ta = ib - d_che if !missing(ib) & !missing(d_che)
-label var dechow_ta "IB - (CHE - L.CHE) = IB - d_che"
+gen double dv_ta_heese = heese_ta / l_at if !missing(heese_ta) & !missing(l_at)
+gen double dv_ta_dss   = dss_ta   / l_at if !missing(dss_ta)   & !missing(l_at)
+gen double dv_ta_ali   = ali_ta   / l_at if !missing(ali_ta)   & !missing(l_at)
+gen double dv_ta_yu    = yu_ta    / l_at if !missing(yu_ta)    & !missing(l_at)
+gen double dv_ta_ge    = ge_ta    / l_at if !missing(ge_ta)    & !missing(l_at)
 
-gen double dv_ta_dss    = dss_ta    / l_at if !missing(dss_ta)    & !missing(l_at)
-gen double dv_ta_ko     = ko_ta     / l_at if !missing(ko_ta)     & !missing(l_at)
-gen double dv_ta_yu     = yu_ta     / l_at if !missing(yu_ta)     & !missing(l_at)
-gen double dv_ta_ge     = ge_ta     / l_at if !missing(ge_ta)     & !missing(l_at)
-gen double dv_ta_dechow = dechow_ta / l_at if !missing(dechow_ta) & !missing(l_at)
-
-label var dv_ta_dss    "dss_ta / lag AT"
-label var dv_ta_ko     "ko_ta / lag AT"
-label var dv_ta_yu     "yu_ta / lag AT"
-label var dv_ta_ge     "ge_ta / lag AT"
-label var dv_ta_dechow "dechow_ta / lag AT"
+label var dv_ta_heese "heese_ta / lag AT"
+label var dv_ta_dss   "dss_ta / lag AT"
+label var dv_ta_ali   "ali_ta / lag AT"
+label var dv_ta_yu    "yu_ta / lag AT"
+label var dv_ta_ge    "ge_ta / lag AT"
 
 gen double iv_1 = 1 / l_at
 gen double iv_22 = (d_revt - d_rect) / l_at if !missing(d_revt) & !missing(d_rect) & !missing(l_at)
 gen double iv_3 = ppegt / l_at
 
-foreach stub in dss ko yu ge dechow {
+sort gvkey year
+by gvkey: gen double iv_4 = roa[_n-1] if year[_n-1] == year - 1
+label var iv_4 "L.ROA (ROA_{t−1}) for da_ko asreg"
+
+foreach stub in heese dss ali yu ge {
     local dv dv_ta_`stub'
     display as text "  DA (`stub'): modified Jones on `dv' (SIC-2 × year)..."
     bys year sic_2: asreg `dv' iv_1 iv_22 iv_3
@@ -222,15 +237,22 @@ foreach stub in dss ko yu ge dechow {
     drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_cons
 }
 
+display as text "  DA (ko): asreg on dv_ta_dss with iv_1–iv_4 (SIC-2 × year)..."
+bys year sic_2: asreg dv_ta_dss iv_1 iv_22 iv_3 iv_4
+gen double da_ko = dv_ta_dss - ///
+    (_b_iv_1 * iv_1 + _b_iv_22 * iv_22 + _b_iv_3 * iv_3 + _b_iv_4 * iv_4 + _b_cons)
+drop _Nobs _R2 _adjR2 _b_iv_1 _b_iv_22 _b_iv_3 _b_iv_4 _b_cons
+
 sort gvkey year
 
-label var da_dss    "Modified-Jones DA; TA=dv_ta_dss (BS, no dep)"
-label var da_ko     "Modified-Jones DA; TA=dv_ta_ko (Jones + dep)"
-label var da_yu     "Modified-Jones DA; TA=dv_ta_yu (NI-OANCF)"
-label var da_ge     "Modified-Jones DA; TA=dv_ta_ge (IBC-OANCF)"
-label var da_dechow "Modified-Jones DA; TA=dv_ta_dechow (IB-dCHE)"
+label var da_heese "Modified-Jones DA; TA=dv_ta_heese (heese WC / lag AT)"
+label var da_dss   "Modified-Jones DA; TA=dv_ta_dss (dss_ta / lag AT)"
+label var da_ko    "Residual DA; norm on dv_ta_dss with iv_1–iv_4 + const (SIC-2×year)"
+label var da_ali   "Modified-Jones DA; TA=dv_ta_ali (heese+Δtxp−dep)"
+label var da_yu    "Modified-Jones DA; TA=dv_ta_yu (NI-OANCF)"
+label var da_ge    "Modified-Jones DA; TA=dv_ta_ge (IBC-OANCF)"
 
-drop d_act d_lct d_che d_dlc d_revt d_rect
+drop d_act d_lct d_che d_dlc d_revt d_rect d_txp
 
 gen double sale_scaled = sale / l_at
 by gvkey: gen double d_sale_scaled = (sale - sale[_n-1]) / l_at if year[_n-1] == year - 1

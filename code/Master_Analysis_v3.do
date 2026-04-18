@@ -74,12 +74,12 @@ drop _tag _firm_years
 /* ====================================================================
    SECTION 2 — 因变量、ESG 变量与 esttab 列标签
 
-   因变量（6）：五类应计 DA + Heese 综合 REM（rem_heese）。
+   因变量（7）：六类应计 DA（da_heese…da_ge 为 Modified Jones；da_ko 为同 dv_ta_dss 上 iv_1–iv_4 残差）+ rem_heese。
    ESG（4，Refinitiv）：fid1 Overall / fid4 Env / fid6 Social / env_soc E+S。
    ivtags：与 ivall 一一对应，用于 eststo 名称与输出文件名后缀。
    ==================================================================== */
 
-local dvlist da_dss da_ko da_yu da_ge da_dechow ///
+local dvlist da_heese da_dss da_ko da_yu da_ge da_ali ///
              rem_heese
 
 local iv_ref  fid1_vscore fid4_vscore fid6_vscore env_soc_score
@@ -95,11 +95,12 @@ local ivtags  ref1 ref4 ref6 ref46
    SECTION 3 — 变量标签（供 esttab label显示；不改变内存中的变量名）
    ==================================================================== */
 
-capture label var da_dss          "DA: BS accrual, no dep [Compustat]"
-capture label var da_ko           "DA: Jones incl. dep [Compustat]"
+capture label var da_heese        "DA: Modified Jones on heese_ta/AT [Compustat]"
+capture label var da_dss          "DA: Modified Jones on dss_ta/AT [Compustat]"
+capture label var da_ko           "DA: residual on dss_ta/AT; iv_1–iv_3 & L.ROA [Compustat]"
 capture label var da_yu           "DA: NI − OANCF [Compustat]"
 capture label var da_ge           "DA: IBC − OANCF [Compustat]"
-capture label var da_dechow       "DA: IB − dCHE [Compustat]"
+capture label var da_ali          "DA: Modified Jones on (heese+Δtxp−dep)/AT [Compustat]"
 label var rem_heese               "REM aggregate [Compustat]"
 capture label var ab_prod         "Abnormal production [Compustat]"
 capture label var ab_disexp_neg   "Abnl disc. exp. ×(−1) [Compustat]"
@@ -248,19 +249,19 @@ forvalues j = 1/`niv' {
 }
 
 * OLS 单条示例（无宏；因变量/ESG 可换；控制变量 = SECTION 4 中 global ctrl 的核心 6 个）：
-* reghdfe da_dss fid1_vscore i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* reghdfe da_heese fid1_vscore i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
 * IV 单条示例（与 SECTION 7 同型；内生 fid1_vscore，工具 ivloo_ref1 = SECTION 5 对应该 ESG）：
-* ivreghdfe da_dss (fid1_vscore = ivloo_ref1) i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* ivreghdfe da_heese (fid1_vscore = ivloo_ref1) i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
 * OLS 附加检验：调节效应（ESG × industry_type；## 含 ESG 主效应、行业主效应与交互，不再单列 i.industry_type）：
-* reghdfe da_dss c.fid1_vscore##i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* reghdfe da_heese c.fid1_vscore##i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
 * IV 附加检验：同上调节设定，内生块与工具块为平行因子（LOO 与对应 ESG 同步交互）：
-* ivreghdfe da_dss (c.fid1_vscore##i.industry_type = c.ivloo_ref1##i.industry_type) size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* ivreghdfe da_heese (c.fid1_vscore##i.industry_type = c.ivloo_ref1##i.industry_type) size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
 
 
 /* ====================================================================
    SECTION 6 — OLS: reghdfe
 
-     外层 = ESG，内层 = DV → 每个 ESG 一张表，6 个 DV 为列。
+     外层 = ESG，内层 = DV → 每个 ESG 一张表，7 个 DV 为列。
      模型：DV ~ ESG + i.industry_type + $ctrl, absorb(gvkey year) cluster(gvkey)
    ==================================================================== */
 
@@ -300,7 +301,7 @@ display as text ">>> Part A completed."
 /* ====================================================================
    SECTION 7 — IV: ivreghdfe（工具变量见 SECTION 5：ivloo_<tag>）
 
-     每个 ESG 对应 ivloo_<ivtags>，对 6 个 DV 分别跑 ivreghdfe。
+     每个 ESG 对应 ivloo_<ivtags>，对 7 个 DV 分别跑 ivreghdfe。
      每个 ESG 一张表，附 Kleibergen-Paap Wald F（弱工具变量检验）。
    ==================================================================== */
 
