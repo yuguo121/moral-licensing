@@ -196,7 +196,47 @@ winsor2 `wvars', cuts(0.5 99.5) replace
 
 
 /* ====================================================================
-   SECTION 5 — OLS: reghdfe
+   SECTION 5 — IV 工具：同 SIC-2×year 留一法（LOO）同伴均值
+
+     对每个存在于数据中的 ESG（ivlist）生成常存变量 ivloo_<ivtags>，
+     公式：组内 sum(ESG) 与 count，(sum − 自身) / (n−1)，仅当 n>1 且 ESG 非缺失。
+     须在 winsorize（SECTION 4）之后执行，与原先 IV 循环内构造的 Z 一致。
+   ==================================================================== */
+
+display as text _newline ">>> LOO instruments (SIC-2 × year, pre-regression)"
+
+forvalues j = 1/`niv' {
+    local iv  : word `j' of `ivlist'
+    local tag : word `j' of `tags'
+    capture confirm variable `iv'
+    if _rc continue
+
+    capture confirm variable ivloo_`tag'
+    if !_rc drop ivloo_`tag'
+
+    tempvar _sm _cn
+    quietly bysort sic_2 year: egen double `_sm' = total(`iv')
+    quietly bysort sic_2 year: egen long   `_cn' = count(`iv')
+    quietly gen double ivloo_`tag' = (`_sm' - `iv') / (`_cn' - 1) ///
+        if `_cn' > 1 & !missing(`iv')
+    drop `_sm' `_cn'
+
+    capture label var ivloo_`tag' "LOO peer mean, `iv' (SIC-2×year)"
+    display as text "  [LOO] ivloo_`tag'  ←  `iv'"
+}
+
+* OLS 单条示例（无宏；因变量/ESG 可换；控制变量 = SECTION 4 中 global ctrl 的核心 6 个）：
+* reghdfe da_dss fid1_vscore i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* IV 单条示例（与 SECTION 7 同型；内生 fid1_vscore，工具 ivloo_ref1 = SECTION 5 对应该 ESG）：
+* ivreghdfe da_dss (fid1_vscore = ivloo_ref1) i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* OLS 附加检验：调节效应（ESG × industry_type；## 含 ESG 主效应、行业主效应与交互，不再单列 i.industry_type）：
+* reghdfe da_dss c.fid1_vscore##i.industry_type size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+* IV 附加检验：同上调节设定，内生块与工具块为平行因子（LOO 与对应 ESG 同步交互）：
+* ivreghdfe da_dss (c.fid1_vscore##i.industry_type = c.ivloo_ref1##i.industry_type) size mb2 lev roa growth_asset cash_holding, absorb(gvkey year) cluster(gvkey)
+
+
+/* ====================================================================
+   SECTION 6 — OLS: reghdfe
 
      外层 = ESG，内层 = DV → 每个 ESG 一张表，6 个 DV 为列。
      模型：DV ~ ESG + i.industry_type + $ctrl, absorb(gvkey year) cluster(gvkey)
@@ -236,43 +276,41 @@ display as text ">>> Part A completed."
 
 
 /* ====================================================================
-   SECTION 6 — IV: ivreghdfe + LOO peer mean
+   SECTION 7 — IV: ivreghdfe（工具变量见 SECTION 5：ivloo_<tag>）
 
-     工具变量：iv_loo = 同 SIC-2×year 内留一法同伴均值。
-     每个 ESG 构造一次 LOO，再对 6 个 DV 分别跑 ivreghdfe。
+     每个 ESG 对应 ivloo_<ivtags>，对 6 个 DV 分别跑 ivreghdfe。
      每个 ESG 一张表，附 Kleibergen-Paap Wald F（弱工具变量检验）。
    ==================================================================== */
 
-display as text _newline ">>> Part B: IV (ivreghdfe + LOO)"
+display as text _newline ">>> Part B: IV (ivreghdfe + SECTION 5 LOO vars)"
 
 forvalues j = 1/`niv' {
     local iv  : word `j' of `ivlist'
     local tag : word `j' of `tags'
     local keepvars `iv' $ctrl
-    display as text _newline "  [IV] ESG = `iv'"
+    display as text _newline "  [IV] ESG = `iv'  |  Z = ivloo_`tag'"
 
-    tempvar _sm _cn _loo
-    quietly bysort sic_2 year: egen double `_sm' = total(`iv')
-    quietly bysort sic_2 year: egen long   `_cn' = count(`iv')
-    quietly gen double `_loo' = (`_sm' - `iv') / (`_cn' - 1) ///
-        if `_cn' > 1 & !missing(`iv')
+    capture confirm variable ivloo_`tag'
+    if _rc {
+        display as text "  [SKIP] ivloo_`tag' missing — run SECTION 5 logic for `iv'."
+        continue
+    }
 
     eststo clear
     local mlist
     foreach dv of local dvlist {
         capture confirm variable `dv'
         if _rc continue
-        capture noisily ivreghdfe `dv' (`iv' = `_loo') ///
+        capture noisily ivreghdfe `dv' (`iv' = ivloo_`tag') ///
             i.industry_type $ctrl, absorb(gvkey year) cluster(gvkey)
         if !_rc {
             eststo iv_`dv'
             estadd local fe       "Firm, Year"
-            estadd local instmt   "LOO SIC-2 × year"
+            estadd local instmt   "LOO SIC-2 × year (ivloo_`tag')"
             capture estadd scalar KP_F = e(widstat)
             local mlist `mlist' iv_`dv'
         }
     }
-    drop `_sm' `_cn' `_loo'
 
     if "`mlist'" != "" {
         esttab `mlist' using "$OUTPUT\v3_IV_`tag'.rtf", ///
