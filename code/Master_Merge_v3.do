@@ -281,7 +281,7 @@ display as text ">>> Part 1 done: dv_em_v3.dta"
    Step 1  KLD        (cusip_8 × fyear)  → KLD strengths / concerns
    Step 2  IO         (cusip_8 × fyear)  → per_* 机构持股
    Step 3  Refinitiv V2 (cusip_8 × year) → fid{1-16,200,206,239,269,422}_{value,vscore}
-   Step 4  MSCI       (cusip_8 × year)   → pillar scores
+   Step 4  MSCI       (cusip_8 × year)   → issuer/IVA、支柱与主题分等（见 keepusing）
    Step 5  Duality    (gvkey   × year)   → duality
    Step 6  ExecuComp  (gvkey   × year)  → CEO/CFO controls, interim flags
    Step 7  IBES       (cusip_8 × year)  → numest, numup, numdown (analyst coverage / revisions)
@@ -358,9 +358,25 @@ foreach fid in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 200 206 239 263 269 422 {
 }
 log_sample, step("Step 3: Refinitiv V2 ESG merge")
 
-* --- Step 4: MSCI (cusip_8 × year) → pillar scores ------------------------
+* --- Step 4: MSCI (cusip_8 × year) → issuer / IVA / pillars / themes -------
 merge 1:1 cusip_8 year using `"`msci_file'"', keep(1 3) nogen ///
-    keepusing(social_pillar_score environmental_pillar_score weighted_average_score)
+    keepusing(issuer_name issuerid issuer_ticker issuer_cusip issuer_sedol issuer_isin ///
+        issuer_cntry_domicile iva_industry iva_rating_date iva_company_rating ///
+        iva_previous_rating iva_rating_trend industry_adjusted_score ///
+        weighted_average_score environmental_pillar_score environmental_pillar_weight ///
+        social_pillar_score social_pillar_weight governance_pillar_score ///
+        governance_pillar_weight climate_change_theme_score climate_change_theme_weight ///
+        natural_res_use_theme_score natural_res_use_theme_weight ///
+        waste_mgmt_theme_score waste_mgmt_theme_weight ///
+        environmental_opps_theme_score environmental_opps_theme_weight ///
+        human_capital_theme_score human_capital_theme_weight ///
+        product_safety_theme_score product_safety_theme_weight ///
+        social_opps_theme_score social_opps_theme_weight ///
+        corporate_gov_theme_score corporate_gov_theme_weight ///
+        business_ethics_theme_score business_ethics_theme_weight ///
+        stakeholder_opposit_theme_score stakeholder_opposit_theme_weight ///
+        carbon_emissions_score carbon_emissions_weight carbon_emissions_exp_score ///
+        carbon_emissions_mgmt_score)
 log_sample, step("Step 4: MSCI merge")
 
 * --- Step 5: Duality (gvkey × year) → duality -----------------------------

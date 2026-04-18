@@ -74,7 +74,8 @@ capture gen double kld_emp_num1 = emp_str_num1 - emp_con_num1
 * Winsorize existing vars used in grid
 local wvars ko_da_sic ko_da_kothari rem_heese ///
             vs_1 vs_4 vs_6 ///
-            environmental_pillar_score social_pillar_score weighted_average_score ///
+            environmental_pillar_score social_pillar_score governance_pillar_score ///
+            weighted_average_score ///
             kld_env_num1 kld_emp_num1 kldnocg ///
             $ctrl_core $ctrl_full_raw $ctrl_s2
 local wvars_exist
@@ -155,7 +156,8 @@ foreach smp in full highcarbon {
             }
 
             * msci
-            foreach pair in "E environmental_pillar_score" "S social_pillar_score" "Total weighted_average_score" {
+            foreach pair in "E environmental_pillar_score" "S social_pillar_score" ///
+                "G governance_pillar_score" "Total weighted_average_score" {
                 gettoken sc ev : pair
                 capture noisily run_one_iv, esgvar(`ev') dvvar(`dv') ctrls("`ctrls'")
                 if _rc | r(ok)!=1 post `mem' ("msci") ("`sc'") ("`dv'") ("`stg'") ("`smp'") ("fail") ("`yw'") (.) (.) (.) (.) (.) (.)

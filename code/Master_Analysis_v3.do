@@ -85,6 +85,7 @@ local dvlist da_dss da_ko da_yu da_ge da_dechow ///
 local iv_ref  fid1_vscore fid4_vscore fid6_vscore env_soc_score
 // local iv_kld  emp_kld env_kld kld_es_total
 // local iv_msci environmental_pillar_score social_pillar_score weighted_average_score
+//       (其余 MSCI 列见 Master_Merge_v3 Step 4 keepusing)
 
 local ivall   `iv_ref'
 local ivtags  ref1 ref4 ref6 ref46
@@ -116,6 +117,27 @@ capture label var kld_es_total    "E+S Net [KLD]"
 capture label var environmental_pillar_score "Environmental Pillar [MSCI]"
 capture label var social_pillar_score        "Social Pillar [MSCI]"
 capture label var weighted_average_score     "Overall Weighted [MSCI]"
+capture label var governance_pillar_score    "Governance Pillar [MSCI]"
+capture label var governance_pillar_weight   "Governance Pillar Weight [MSCI]"
+capture label var industry_adjusted_score    "Industry-adjusted Score [MSCI]"
+capture label var environmental_pillar_weight  "Environmental Pillar Weight [MSCI]"
+capture label var social_pillar_weight       "Social Pillar Weight [MSCI]"
+capture label var climate_change_theme_score "MSCI Theme: Climate Change"
+capture label var natural_res_use_theme_score "MSCI Theme: Natural Resources Use"
+capture label var waste_mgmt_theme_score     "MSCI Theme: Waste Management"
+capture label var environmental_opps_theme_score "MSCI Theme: Environmental Opportunities"
+capture label var human_capital_theme_score  "MSCI Theme: Human Capital"
+capture label var product_safety_theme_score "MSCI Theme: Product Safety"
+capture label var social_opps_theme_score    "MSCI Theme: Social Opportunities"
+capture label var corporate_gov_theme_score  "MSCI Theme: Corporate Governance"
+capture label var business_ethics_theme_score "MSCI Theme: Business Ethics"
+capture label var stakeholder_opposit_theme_score "MSCI Theme: Stakeholder Opposition"
+capture label var carbon_emissions_score     "MSCI Theme: Carbon Emissions"
+capture label var carbon_emissions_exp_score "Carbon Emissions: Exposure [MSCI]"
+capture label var carbon_emissions_mgmt_score "Carbon Emissions: Management [MSCI]"
+capture label var issuer_name                "Issuer Name [MSCI]"
+capture label var issuerid                   "Issuer ID [MSCI]"
+capture label var iva_company_rating         "IVA Company Rating [MSCI]"
 
 label var industry_type  "Industry Culpability"
 label var size           "Firm Size"
